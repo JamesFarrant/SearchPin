@@ -1,8 +1,6 @@
 {
   "name": "SearchPin",
-  "description" : "To use, type '>' + TAB to enter a prefix. \
-                   Then press '>' + TAB then enter your search term. \
-                   To reset a prefix, type '>' + TAB + '-'.",
+  "description" : "To use, type '>' + TAB to enter a prefix. Then press '>' + TAB then enter your search term. To reset a prefix, type '>' + TAB + '-'.",
   "version": "1.0",
   "background": {
     "scripts": ["background.js"]

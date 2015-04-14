@@ -5,6 +5,9 @@
   "background": {
     "scripts": ["background.js"]
   },
+  "icons": {
+    "16": "16icon.png"
+  },
   "omnibox": { "keyword" : ">" },
   "manifest_version": 2
 }

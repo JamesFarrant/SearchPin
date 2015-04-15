@@ -1,18 +1,39 @@
 var search_prefix = "";
 
+var actions = {
+  "MISSING" : { tip: "Unknown action" },
+  "SET_PREFIX": { tip: "Set prefix to <match>%TEXT%</match>", act: function(text) { search_prefix = text } },
+  "CLEAR_PREFIX": { tip: "Clear prefix (%PREFIX%)", act: function(text) { search_prefix = "" }},
+  "PERFORM_SEARCH": { tip: "Search for <dim>%PREFIX%</dim> <match>%TEXT%</match>", act: function(text) {
+        chrome.tabs.getSelected(null, function(tab) {
+                chrome.tabs.update(tab.id, {url: " https://www.google.com/search?q="+ encodeURIComponent(search_prefix) + "%20" + encodeURIComponent(text)});
+            }
+        )
+  }}
+}
+
+function resolve_input(text) {
+  var action = ""
+  if(search_prefix == "") {
+    action = "SET_PREFIX";
+  } else if(text == "-") {
+    action = "CLEAR_PREFIX";
+  } else {
+    action = "PERFORM_SEARCH";
+  }
+  return actions[action];
+}
+
+function parse_text(pre_text,text) {
+  // this might have minor ui issues if the user has a prefix containing %TEXT%
+  // probably not worth making a solution as this is very minor
+  return pre_text.replace(/\%PREFIX\%/g,search_prefix).replace(/\%TEXT\%/g,text)
+}
+
 chrome.omnibox.onInputChanged.addListener(
   function(text, suggest) {
-    var tip_text = ""
-    if(search_prefix == "") {
-      // setting prefix
-      tip_text = "Set prefix to "+text
-    } else if(text == "-") {
-      // clearing prefix
-      tip_text = "Clear prefix"
-    } else {
-      // performing search
-      tip_text = "Search for <dim>"+search_prefix+"</dim> <match>"+text+"</match>"
-    }
+    var desired_action = resolve_input(text);
+    var tip_text = parse_text(desired_action.tip,text);
     chrome.omnibox.setDefaultSuggestion({description: tip_text});
     
     console.log('inputChanged: ' + text);
@@ -23,15 +44,6 @@ chrome.omnibox.onInputChanged.addListener(
 
 chrome.omnibox.onInputEntered.addListener(
   function(text) {
-    console.log('hi');
-    if (search_prefix == "") {
-        search_prefix = text;
-    } else if (text == '-') {
-        search_prefix = "";
-    } else {
-        chrome.tabs.getSelected(null, function(tab) {
-                chrome.tabs.update(tab.id, {url: " https://www.google.com/search?q="+ encodeURIComponent(search_prefix) + "%20" + encodeURIComponent(text)});
-            }
-        )
-    }
+    var desired_action = resolve_input(text);
+    desired_action.act(text);
   });

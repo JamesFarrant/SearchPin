@@ -4,10 +4,13 @@
   "version": "1.0",
   "background": {
     "scripts": ["background.js"]
-  },
+  },	
   "icons": {
     "16": "16icon.png"
   },
   "omnibox": { "keyword" : ">" },
-  "manifest_version": 2
+  "manifest_version": 2,
+  "permissions": [
+  	"storage"
+  ]
 }

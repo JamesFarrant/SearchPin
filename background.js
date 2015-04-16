@@ -2,7 +2,7 @@ var search_prefix = "";
 
 var actions = {
   "MISSING" : { tip: "Unknown action" },
-  "SET_PREFIX": { tip: "Set prefix to <match>%TEXT%</match>", act: function(text) { search_prefix = text } },
+  "SET_PREFIX": { tip: "Set prefix to <match>%TEXT%</match>", act: function(text) { search_prefix = text; save_prefix() }},
   "CLEAR_PREFIX": { tip: "Clear prefix (%PREFIX%)", act: function(text) { search_prefix = "" }},
   "PERFORM_SEARCH": { tip: "Search for <dim>%PREFIX%</dim> <match>%TEXT%</match>", act: function(text) {
         chrome.tabs.getSelected(null, function(tab) {
@@ -62,3 +62,5 @@ chrome.omnibox.onInputEntered.addListener(
         var desired_action = resolve_input(text);
             desired_action.act(text);
         });
+
+load_prefix(); // Saves prefixes across sessions

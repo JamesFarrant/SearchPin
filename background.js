@@ -46,21 +46,19 @@ function load_prefix() {
         });
 }
 
-    chrome.omnibox.onInputChanged.addListener(
-        function (text, suggest) {
-            var desired_action = resolve_input(text);
-            var tip_text = parse_text(desired_action.tip, text);
-            chrome.omnibox.setDefaultSuggestion({description: tip_text});
+chrome.omnibox.onInputChanged.addListener(
+    function (text, suggest) {
+        var desired_action = resolve_input(text);
+        var tip_text = parse_text(desired_action.tip, text);
+        chrome.omnibox.setDefaultSuggestion({description: tip_text});
 
-            console.log('inputChanged: ' + text);
-            suggest([
-                {content: search_prefix + " " + text, description: "Your search term is " + text}
-            ]);
+        console.log('inputChanged: ' + text);
+        suggest([
+            {content: search_prefix + " " + text, description: "Your search term is " + text}]);
         });
 
-    chrome.omnibox.onInputEntered.addListener(
-        function (text) {
-            var desired_action = resolve_input(text);
+chrome.omnibox.onInputEntered.addListener(
+    function (text) {
+        var desired_action = resolve_input(text);
             desired_action.act(text);
-
         });

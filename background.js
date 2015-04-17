@@ -52,7 +52,7 @@ var actions = {
             return "Perform a multisearch for <match>" + str + "</match>";
         },
         act: function (text) {
-            var terms = text.split("|")
+            var terms = text.split("|");
             for (var i = 0; i < terms.length; i++) {
                 perform_search((search_prefix + " " + terms[i].trim()).trim(), true)
             }
@@ -62,12 +62,12 @@ var actions = {
 
 function resolve_input(text) {
     var action = "";
-    if (search_prefix === "") {
-        action = "SET_PREFIX";
+    if (text.indexOf("|") != -1) {
+        action = "PERFORM_MULTISEARCH";
     } else if (text === "-") {
         action = "CLEAR_PREFIX";
-    } else if (text.indexOf("|") != -1) {
-        action = "PERFORM_MULTISEARCH";
+    } else if (search_prefix === "")  {
+        action = "SET_PREFIX";
     } else {
         action = "PERFORM_SEARCH";
     }
@@ -124,7 +124,7 @@ function give_suggestions(text, suggest) {
                         {content: r, description: "<match>" + r + "</match>"}
                     ]);
                 } else if (r.startsWith(search_prefix)) {
-                    var search = r.substr(search_prefix.length + 1)
+                    var search = r.substr(search_prefix.length + 1);
                     suggest([
                         {content: search, description: "<dim>" + search_prefix + "</dim> <match>" + search + "</match>"}
                     ]);

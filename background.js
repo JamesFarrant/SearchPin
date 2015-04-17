@@ -1,23 +1,53 @@
 var search_prefix = "";
 
 var actions = {
-    "MISSING": { tip: "Unknown action" },
-    "SET_PREFIX": { tip: "Set prefix to <match>%TEXT%</match>", act: function (text) {
-        search_prefix = text;
-        save_prefix()
-    }},
-    "CLEAR_PREFIX": { tip: "Clear prefix (%PREFIX%)", act: function (text) {
-        search_prefix = ""
-    }},
-    "PERFORM_SEARCH": { tip: "Search for <dim>%PREFIX%</dim> <match>%TEXT%</match>", act: function (text) {
-        perform_search(search_prefix + " "+text)
-    }},
-    "PERFORM_MULTISEARCH": { tip: "Perform a multisearch for <match>%TEXT%</match>", act: function (text) {
-        var terms = text.split("|")
-        for(var i = 0; i < terms.length; i++) {
-            perform_search(search_prefix + " "+terms[i].trim(),true)
+    "MISSING": { tip: function(text) {
+        return "Unknown action";
+    }, act: function(text) {} },
+    "SET_PREFIX": {
+        tip: function(text) {
+            return "Set prefix to <match>"+text+"</match>"
+        },
+        act: function (text) {
+            search_prefix = text;
+            save_prefix()
         }
-    }}
+    },
+    "CLEAR_PREFIX": {
+        tip: function(text) {
+            return "Clear prefix ("+search_prefix+")";
+        },
+        act: function (text) {
+            search_prefix = ""
+        }
+    },
+    "PERFORM_SEARCH": {
+        tip: function(text) {
+            return "Search for <dim>"+search_prefix+"</dim> <match>"+text+"</match>";
+        },
+        act: function (text) {
+            perform_search(search_prefix+" "+text)
+        }
+    },
+    "PERFORM_MULTISEARCH": { 
+        tip: function(text) {
+            var terms = text.split("|");
+            for(var t in terms) { 
+                terms[t] = terms[t].trim();
+            }
+            var last_term = terms.pop();
+            var str = terms.join("</match>, <match>");
+            str += "</match> and <match>"+last_term;
+
+            return "Perform a multisearch for <match>"+str+"</match>";
+        }, 
+        act: function (text) {
+            var terms = text.split("|")
+            for(var i = 0; i < terms.length; i++) {
+                perform_search((search_prefix+" "+terms[i].trim()).trim(),true)
+            }
+        }
+    }
 };
 
 function resolve_input(text) {
@@ -32,12 +62,6 @@ function resolve_input(text) {
         action = "PERFORM_SEARCH";
     }
     return actions[action];
-}
-
-function parse_text(pre_text, text) {
-    // this might have minor ui issues if the user has a prefix containing %TEXT%
-    // probably not worth making a solution as this is very minor
-    return pre_text.replace(/\%PREFIX\%/g, search_prefix).replace(/\%TEXT\%/g, text)
 }
 
 function perform_search(term, background) { //add background feature
@@ -71,7 +95,7 @@ function load_prefix() {
 chrome.omnibox.onInputChanged.addListener(
     function (text, suggest) {
         var desired_action = resolve_input(text);
-        var tip_text = parse_text(desired_action.tip, text);
+        var tip_text = desired_action.tip(text);
         chrome.omnibox.setDefaultSuggestion({description: tip_text});
 
         console.log('inputChanged: ' + text);

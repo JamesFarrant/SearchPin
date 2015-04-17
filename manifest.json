@@ -11,6 +11,7 @@
   "omnibox": { "keyword" : ">" },
   "manifest_version": 2,
   "permissions": [
-  	"storage"
+  	"storage",
+    "http://suggestqueries.google.com/*"
   ]
 }

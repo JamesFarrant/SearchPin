@@ -101,16 +101,41 @@ function load_prefix() {
     });
 }
 
+function give_suggestions(text, suggest) { 
+    if((search_prefix+text).trim().length > 0) {
+        var xhr = new XMLHttpRequest();
+
+        xhr.open("GET", "http://suggestqueries.google.com/complete/search?client=chrome&q="+encodeURIComponent(search_prefix+" "+text), false);
+        xhr.send();
+
+        var result = JSON.parse(xhr.responseText);
+
+        if(result[1].length > 0) {
+            for(var i = 0; i < 5 && i < result[1].length; i++) {
+                var r = result[1][i];
+                console.log(r);
+                if(search_prefix==="") {
+                    suggest([
+                        {content: r, description: "<match>"+r+"</match>"}
+                    ]);
+                } else if(r.startsWith(search_prefix)) {
+                    var search = r.substr(search_prefix.length+1)
+                    suggest([
+                        {content: search, description: "<dim>"+search_prefix+"</dim> <match>"+search+"</match>"}
+                    ]);
+                }
+            }
+        }
+    }
+}
+
 chrome.omnibox.onInputChanged.addListener(
     function (text, suggest) {
         var desired_action = resolve_input(text);
         var tip_text = desired_action.tip(text);
         chrome.omnibox.setDefaultSuggestion({description: tip_text});
 
-        console.log('inputChanged: ' + text);
-        suggest([
-            {content: search_prefix + " " + text, description: "Your search term is " + text}
-        ]);
+        give_suggestions(text,suggest);
     }
 );
 

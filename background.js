@@ -31,14 +31,23 @@ var actions = {
     },
     "PERFORM_MULTISEARCH": { 
         tip: function(text) {
-            var terms = text.split("|");
+            if(text.match(/^[ \|]*$/)) {
+                // they've entered something like " | "
+                return "Enter multiple searches separated by |";
+            }
+            // the regex removes any empty final terms
+            var terms = text.replace(/ *\|+ *$/g,"").split("|");
             for(var t in terms) { 
                 terms[t] = terms[t].trim();
             }
-            var last_term = terms.pop();
-            var str = terms.join("</match>, <match>");
-            str += "</match> and <match>"+last_term;
-
+            var str = "";
+            if(terms.length > 1) {
+                var last_term = terms.pop();
+                var str = terms.join("</match>, <match>");
+                str += "</match> and <match>"+last_term;
+            } else {
+                str = terms[0];
+            }
             return "Perform a multisearch for <match>"+str+"</match>";
         }, 
         act: function (text) {

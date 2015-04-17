@@ -10,9 +10,13 @@ var actions = {
         search_prefix = ""
     }},
     "PERFORM_SEARCH": { tip: "Search for <dim>%PREFIX%</dim> <match>%TEXT%</match>", act: function (text) {
-        chrome.tabs.getSelected(null, function (tab) {
-            chrome.tabs.update(tab.id, {url: " https://www.google.com/search?q=" + encodeURIComponent(search_prefix) + "%20" + encodeURIComponent(text)});
-        })
+        perform_search(search_prefix + " "+text)
+    }},
+    "PERFORM_MULTISEARCH": { tip: "Perform a multisearch for <match>%TEXT%</match>", act: function (text) {
+        var terms = text.split("|")
+        for(var i = 0; i < terms.length; i++) {
+            perform_search(search_prefix + " "+terms[i].trim(),true)
+        }
     }}
 };
 
@@ -22,6 +26,8 @@ function resolve_input(text) {
         action = "SET_PREFIX";
     } else if (text === "-") {
         action = "CLEAR_PREFIX";
+    } else if(text.indexOf("|") != -1) {
+        action = "PERFORM_MULTISEARCH";
     } else {
         action = "PERFORM_SEARCH";
     }
@@ -34,6 +40,17 @@ function parse_text(pre_text, text) {
     return pre_text.replace(/\%PREFIX\%/g, search_prefix).replace(/\%TEXT\%/g, text)
 }
 
+function perform_search(term, background) { //add background feature
+    var url = "https://www.google.com/search?q=" + encodeURIComponent(term);
+    if(background !== true) {
+        chrome.tabs.getSelected(null, function (tab) {
+            chrome.tabs.update(tab.id, {url: url});
+        })
+    } else {
+        chrome.tabs.create({url:url,selected:false},function(tab){});
+    }
+}
+
 function save_prefix() {
     var prefix_value = search_prefix;
     // Stores the prefix
@@ -41,6 +58,7 @@ function save_prefix() {
         console.log('Set is working');
     });
 }
+
 function load_prefix() {
     chrome.storage.sync.get('saved_prefix', function (items) {
         console.log("items", items);
@@ -60,12 +78,14 @@ chrome.omnibox.onInputChanged.addListener(
         suggest([
             {content: search_prefix + " " + text, description: "Your search term is " + text}
         ]);
-    });
+    }
+);
 
 chrome.omnibox.onInputEntered.addListener(
     function (text) {
         var desired_action = resolve_input(text);
         desired_action.act(text);
-    });
+    }
+);
 
 load_prefix();

@@ -12,7 +12,7 @@ var actions = {
         },
         act: function (text) {
             search_prefix = text;
-            save_prefix()
+            save_data();
         }
     },
     "CLEAR_PREFIX": {
@@ -109,6 +109,7 @@ function add_suffix(keyword, suffix) {
     if(!(keyword in suffixes)) {
         suffixes[keyword] = suffix.trim();
     }
+    save_data();
 }
 
 function remove_suffix(keyword) {
@@ -116,6 +117,7 @@ function remove_suffix(keyword) {
     if(keyword in suffixes) {
         delete suffixes[keyword];
     }
+    save_data();
 }
 
 function substitute_suffixes(text) {
@@ -144,23 +146,23 @@ function perform_search(term, background) { //add background feature
     }
 }
 
-function save_prefix() {
+function save_data() {
     var prefix_value = search_prefix;
     // Stores the prefix
-    chrome.storage.sync.set({"saved_prefix": prefix_value}, function () {
-        console.log('Set is working');
+    chrome.storage.sync.set({"saved_prefix": prefix_value, "suffixes": JSON.stringify(suffixes)}, function () {
     });
 }
 
-function load_prefix() {
-    chrome.storage.sync.get('saved_prefix', function (items) {
-        console.log("items", items);
-        console.log('Prefix set');
+function load_data() {
+    chrome.storage.sync.get(["saved_prefix", "suffixes"], function (items) {
+        search_prefix = items['saved_prefix'];
         if (search_prefix == undefined) {
             search_prefix = "";
         }
 
-        search_prefix = items['saved_prefix'];
+        if(items["suffixes"] !== undefined) {
+            suffixes = JSON.parse(items["suffixes"]);
+        }
     });
 }
 
@@ -209,4 +211,4 @@ chrome.omnibox.onInputEntered.addListener(
     }
 );
 
-load_prefix();
+load_data();

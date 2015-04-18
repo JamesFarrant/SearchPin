@@ -141,7 +141,9 @@ function perform_search(term, background) { //add background feature
             chrome.tabs.update(tab.id, {url: url});
         })
     } else {
-        chrome.tabs.create({url: url, selected: false}, function (tab) {
+        chrome.tabs.getSelected(null, function(tab) {
+            chrome.tabs.create({'url': url, 'windowId': tab.windowId, 'index': tab.index + 1, 'opener_tab_id': tab.id}, function (tab) {
+            });
         });
     }
 }

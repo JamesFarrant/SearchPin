@@ -1,4 +1,5 @@
 var search_prefix = "";
+var suffixes = {};
 
 var actions = {
     "MISSING": { tip: function (text) {
@@ -11,7 +12,7 @@ var actions = {
         },
         act: function (text) {
             search_prefix = text;
-            save_prefix()
+            save_data();
         }
     },
     "CLEAR_PREFIX": {
@@ -57,6 +58,31 @@ var actions = {
                 perform_search((search_prefix + " " + terms[i].trim()).trim(), true)
             }
         }
+    },
+    "ADD_SUFFIX": {
+        process_input: function(text) {
+            var terms = text.split(">");
+            var suffix = terms[0].trim();
+            var keyword = terms[1].trim().replace(/!*/,"");
+            return [suffix,keyword];
+        },
+        tip: function(text) {
+            var input = this.process_input(text);
+            return "Add <match>!"+input[1]+"</match> as a shortcut for <match>"+input[0]+"</match>";
+        },
+        act: function(text) {
+            var input = this.process_input(text);
+
+            add_suffix(input[1],input[0]);
+        }
+    },
+    "REMOVE_SUFFIX": {
+        tip: function(text) {
+            return "Remove <match>!"+text.substring(1)+"</match> as a shortcut";
+        },
+        act: function(text) {
+            remove_suffix(text.substring(1));
+        }
     }
 };
 
@@ -64,8 +90,12 @@ function resolve_input(text) {
     var action = "";
     if (text.indexOf("|") != -1) {
         action = "PERFORM_MULTISEARCH";
+    } else if(text.indexOf(">") != -1) { 
+        action = "ADD_SUFFIX";
     } else if (text === "-") {
         action = "CLEAR_PREFIX";
+    } else if (text.charAt(0) === "-") {
+        action = "REMOVE_SUFFIX";
     } else if (search_prefix === "")  {
         action = "SET_PREFIX";
     } else {
@@ -74,37 +104,65 @@ function resolve_input(text) {
     return actions[action];
 }
 
+function add_suffix(keyword, suffix) {
+    keyword = keyword.toLowerCase();
+    if(!(keyword in suffixes)) {
+        suffixes[keyword] = suffix.trim();
+    }
+    save_data();
+}
+
+function remove_suffix(keyword) {
+    keyword = keyword.toLowerCase();
+    if(keyword in suffixes) {
+        delete suffixes[keyword];
+    }
+    save_data();
+}
+
+function substitute_suffixes(text) {
+    var applicable_suffixes = [];
+    var working_text = text;
+    for(var s in suffixes) {
+        if(working_text.match(new RegExp("!"+s+"\\b", "i"))) {
+            applicable_suffixes.push(suffixes[s]);
+            working_text = working_text.replace(new RegExp("!"+s+" *", "i"), "")
+        }
+    }    
+    applicable_suffixes.unshift(working_text.trim());
+    return applicable_suffixes.join(" ");
+}
+
 function perform_search(term, background) { //add background feature
+    term = substitute_suffixes(term);
     var url = "https://www.google.com/search?q=" + encodeURIComponent(term);
     if (background !== true) {
         chrome.tabs.getSelected(null, function (tab) {
             chrome.tabs.update(tab.id, {url: url});
         })
     } else {
-        // Get tab using getSelected then adds indexes for each new concurrent tab and assigns IDs.
-        chrome.tabs.getSelected(null, function(tab) {
-            chrome.tabs.create({'url': url,'windowId': tab.windowId, 'index': tab.index + 1, 'openerTabId': tab.id  }, function (tab) {
+        chrome.tabs.create({url: url, selected: false}, function (tab) {
         });
-    });
-  }
+    }
 }
-function save_prefix() {
+
+function save_data() {
     var prefix_value = search_prefix;
     // Stores the prefix
-    chrome.storage.sync.set({"saved_prefix": prefix_value}, function () {
-        console.log('Set is working');
+    chrome.storage.sync.set({"saved_prefix": prefix_value, "suffixes": JSON.stringify(suffixes)}, function () {
     });
 }
 
-function load_prefix() {
-    chrome.storage.sync.get('saved_prefix', function (items) {
-        console.log("items", items);
-        console.log('Prefix set');
+function load_data() {
+    chrome.storage.sync.get(["saved_prefix", "suffixes"], function (items) {
+        search_prefix = items['saved_prefix'];
         if (search_prefix == undefined) {
             search_prefix = "";
         }
 
-        search_prefix = items['saved_prefix'];
+        if(items["suffixes"] !== undefined) {
+            suffixes = JSON.parse(items["suffixes"]);
+        }
     });
 }
 
@@ -153,4 +211,4 @@ chrome.omnibox.onInputEntered.addListener(
     }
 );
 
-load_prefix();
+load_data();

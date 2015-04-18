@@ -60,24 +60,26 @@ var actions = {
         }
     },
     "ADD_SUFFIX": {
+        process_input: function(text) {
+            var terms = text.split(">");
+            var suffix = terms[0].trim();
+            var keyword = terms[1].trim().replace(/!*/,"");
+            return [suffix,keyword];
+        },
         tip: function(text) {
-            var terms = text.split(">");
-            var suffix = terms[0].trim();
-            var keyword = terms[1].trim();
-            return "Add <match>!"+keyword+"</match> as a shortcut for <match>"+suffix+"</match>";
-        }
+            var input = this.process_input(text);
+            return "Add <match>!"+input[1]+"</match> as a shortcut for <match>"+input[0]+"</match>";
+        },
         act: function(text) {
-            var terms = text.split(">");
-            var suffix = terms[0].trim();
-            var keyword = terms[1].trim();
+            var input = this.process_input(text);
 
-            add_suffix(keyword,suffix);
+            add_suffix(input[1],input[0]);
         }
     },
     "REMOVE_SUFFIX": {
         tip: function(text) {
             return "Remove <match>!"+text.substring(1)+"</match> as a shortcut";
-        }
+        },
         act: function(text) {
             remove_suffix(text.substring(1));
         }
@@ -88,8 +90,12 @@ function resolve_input(text) {
     var action = "";
     if (text.indexOf("|") != -1) {
         action = "PERFORM_MULTISEARCH";
+    } else if(text.indexOf(">") != -1) { 
+        action = "ADD_SUFFIX";
     } else if (text === "-") {
         action = "CLEAR_PREFIX";
+    } else if (text.charAt(0) === "-") {
+        action = "REMOVE_SUFFIX";
     } else if (search_prefix === "")  {
         action = "SET_PREFIX";
     } else {
@@ -126,6 +132,7 @@ function substitute_suffixes(text) {
 }
 
 function perform_search(term, background) { //add background feature
+    term = substitute_suffixes(term);
     var url = "https://www.google.com/search?q=" + encodeURIComponent(term);
     if (background !== true) {
         chrome.tabs.getSelected(null, function (tab) {

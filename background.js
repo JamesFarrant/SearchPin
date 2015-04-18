@@ -1,4 +1,5 @@
 var search_prefix = "";
+var suffixes = {};
 
 var actions = {
     "MISSING": { tip: function (text) {
@@ -57,6 +58,29 @@ var actions = {
                 perform_search((search_prefix + " " + terms[i].trim()).trim(), true)
             }
         }
+    },
+    "ADD_SUFFIX": {
+        tip: function(text) {
+            var terms = text.split(">");
+            var suffix = terms[0].trim();
+            var keyword = terms[1].trim();
+            return "Add <match>!"+keyword+"</match> as a shortcut for <match>"+suffix+"</match>";
+        }
+        act: function(text) {
+            var terms = text.split(">");
+            var suffix = terms[0].trim();
+            var keyword = terms[1].trim();
+
+            add_suffix(keyword,suffix);
+        }
+    },
+    "REMOVE_SUFFIX": {
+        tip: function(text) {
+            return "Remove <match>!"+text.substring(1)+"</match> as a shortcut";
+        }
+        act: function(text) {
+            remove_suffix(text.substring(1));
+        }
     }
 };
 
@@ -72,6 +96,33 @@ function resolve_input(text) {
         action = "PERFORM_SEARCH";
     }
     return actions[action];
+}
+
+function add_suffix(keyword, suffix) {
+    keyword = keyword.toLowerCase();
+    if(!(keyword in suffixes)) {
+        suffixes[keyword] = suffix.trim();
+    }
+}
+
+function remove_suffix(keyword) {
+    keyword = keyword.toLowerCase();
+    if(keyword in suffixes) {
+        delete suffixes[keyword];
+    }
+}
+
+function substitute_suffixes(text) {
+    var applicable_suffixes = [];
+    var working_text = text;
+    for(var s in suffixes) {
+        if(working_text.match(new RegExp("!"+s+"\\b", "i"))) {
+            applicable_suffixes.push(suffixes[s]);
+            working_text = working_text.replace(new RegExp("!"+s+" *", "i"), "")
+        }
+    }    
+    applicable_suffixes.unshift(working_text.trim());
+    return applicable_suffixes.join(" ");
 }
 
 function perform_search(term, background) { //add background feature

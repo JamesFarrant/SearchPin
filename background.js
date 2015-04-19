@@ -8,10 +8,10 @@ var actions = {
     } },
     "SET_PREFIX": {
         tip: function (text) {
-            return "Set prefix to <match>" + text + "</match>"
+            return "Set prefix to <match>" + text.substring(1).trim() + "</match>"
         },
         act: function (text) {
-            search_prefix = text;
+            search_prefix = text.substring(1).trim();
             save_data();
         }
     },
@@ -20,12 +20,17 @@ var actions = {
             return "Clear prefix (" + search_prefix + ")";
         },
         act: function (text) {
-            search_prefix = ""
+            search_prefix = "";
+            save_data();
         }
     },
     "PERFORM_SEARCH": {
         tip: function (text) {
-            return "Search for <dim>" + substitute_suffixes(search_prefix) + "</dim> <match>" + substitute_suffixes(text) + "</match>";
+            if(search_prefix === "") {
+                return "Search for <match>" + substitute_suffixes(text) + "</match>";
+            } else {
+                return "Search for <dim>" + substitute_suffixes(search_prefix) + "</dim> <match>" + substitute_suffixes(text) + "</match>";
+            }
         },
         act: function (text) {
             perform_search(search_prefix + " " + text)
@@ -40,7 +45,7 @@ var actions = {
             // the regex removes any empty final terms
             var terms = text.replace(/ *\|+ *$/g, "").split("|");
             for (var t in terms) {
-                terms[t] = substitute_suffixes(terms[t].trim());
+                terms[t] = substitute_suffixes(terms[t]).trim();
             }
             var str = "";
             if (terms.length > 1) {
@@ -96,7 +101,7 @@ function resolve_input(text) {
         action = "CLEAR_PREFIX";
     } else if (text.charAt(0) === "-") {
         action = "REMOVE_SUFFIX";
-    } else if (search_prefix === "")  {
+    } else if (text.charAt(0) === "+") {
         action = "SET_PREFIX";
     } else {
         action = "PERFORM_SEARCH";
@@ -134,7 +139,7 @@ function substitute_suffixes(text) {
 }
 
 function perform_search(term, background) { //add background feature
-    term = substitute_suffixes(term);
+    term = substitute_suffixes(term).trim();
     var url = "https://www.google.com/search?q=" + encodeURIComponent(term);
     if (background !== true) {
         chrome.tabs.getSelected(null, function (tab) {

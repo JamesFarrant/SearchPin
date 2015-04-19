@@ -53,7 +53,7 @@ var actions = {
             return "Perform a multisearch for <match>" + str + "</match>";
         },
         act: function (text) {
-            var terms = text.split("|");
+            var terms = text.split("|").reverse();
             for (var i = 0; i < terms.length; i++) {
                 perform_search((search_prefix + " " + terms[i].trim()).trim(), true)
             }

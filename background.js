@@ -25,7 +25,7 @@ var actions = {
     },
     "PERFORM_SEARCH": {
         tip: function (text) {
-            return "Search for <dim>" + search_prefix + "</dim> <match>" + text + "</match>";
+            return "Search for <dim>" + substitute_suffixes(search_prefix) + "</dim> <match>" + substitute_suffixes(text) + "</match>";
         },
         act: function (text) {
             perform_search(search_prefix + " " + text)
@@ -40,7 +40,7 @@ var actions = {
             // the regex removes any empty final terms
             var terms = text.replace(/ *\|+ *$/g, "").split("|");
             for (var t in terms) {
-                terms[t] = terms[t].trim();
+                terms[t] = substitute_suffixes(terms[t].trim());
             }
             var str = "";
             if (terms.length > 1) {

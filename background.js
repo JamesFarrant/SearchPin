@@ -142,7 +142,7 @@ function perform_search(term, background) { //add background feature
         })
     } else {
         chrome.tabs.getSelected(null, function(tab) {
-            chrome.tabs.create({'url': url, 'windowId': tab.windowId, 'index': tab.index + 1, 'opener_tab_id': tab.id}, function (tab) {
+            chrome.tabs.create({'url': url, 'windowId': tab.windowId, 'index': tab.index + 1, 'openerTabId': tab.id}, function (tab) {
             });
         });
     }

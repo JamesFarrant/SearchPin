@@ -6,7 +6,8 @@
     "scripts": ["background.js"]
   },	
   "icons": {
-    "16": "16icon.png"
+    "16": "16icon.png",
+    "48": "48icon.png"
   },
   "omnibox": { "keyword" : ">" },
   "manifest_version": 2,

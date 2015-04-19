@@ -172,7 +172,11 @@ function give_suggestions(text, suggest) {
     if ((search_prefix + text).trim().length > 0) {
         var xhr = new XMLHttpRequest();
 
-        xhr.open("GET", "http://suggestqueries.google.com/complete/search?client=chrome&q=" + encodeURIComponent(search_prefix + " " + text), false);
+        xhr.open("GET", 
+            "http://suggestqueries.google.com/complete/search?client=chrome&q=" + 
+            encodeURIComponent(search_prefix + " " + substitute_suffixes(text)), 
+            false);
+
         xhr.send();
 
         var result = JSON.parse(xhr.responseText);

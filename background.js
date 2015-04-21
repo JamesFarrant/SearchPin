@@ -1,6 +1,7 @@
 var search_prefix = "";
 var suffixes = {};
 var targets = [];
+var default_target = 0;
 
 var actions = {
     "MISSING": { tip: function (text) {
@@ -37,14 +38,23 @@ var actions = {
                 tip_text = "Search for <dim>" + substitute_suffixes(search_prefix) + "</dim> <match>" + substitute_suffixes(text) + "</match>";
             }
 
-            return tip_text + " on <url>"+target.name+"</url>";
+            if(target == targets[default_target]) {
+                return tip_text;
+            } else {
+                return tip_text + " on <url>"+target.name+"</url>";
+            }
         },
         act: function (text) {
-            perform_search(search_prefix + " " + text)
+            target = get_target(text);
+            text = text.replace(new RegExp("@"+target.shortcut, "i"), "");
+            perform_search(search_prefix + " " + text, false, target);
         }
     },
     "PERFORM_MULTISEARCH": {
         tip: function (text) {
+            target = get_target(text);
+            text = text.replace(new RegExp("@"+target.shortcut, "i"), "");
+
             if (text.match(/^[ \|]*$/)) {
                 // they've entered something like " | "
                 return "Enter multiple searches separated by |";
@@ -62,12 +72,20 @@ var actions = {
             } else {
                 str = terms[0];
             }
-            return "Perform a multisearch for <match>" + str + "</match>";
+
+            if(target == targets[default_target]) {
+                return "Perform a multisearch for <match>" + str + "</match>";
+            } else {
+                return "Perform a multisearch for <match>" + str + "</match> on <url>"+target.name+"</url>";
+            }
         },
         act: function (text) {
+            target = get_target(text);
+            text = text.replace(new RegExp("@"+target.shortcut, "i"), "");
+
             var terms = text.split("|").reverse();
             for (var i = 0; i < terms.length; i++) {
-                perform_search((search_prefix + " " + terms[i].trim()).trim(), true)
+                perform_search((search_prefix + " " + terms[i].trim()).trim(), true, target)
             }
         }
     },
@@ -167,11 +185,8 @@ function get_target(term) {
     return targets[0]; // todo: make this default
 }
 
-function perform_search(term, background) {
-    target = get_target(term); // todo move this somewhere else
-    term = term.replace(new RegExp("@"+target.shortcut, "i"), "");
+function perform_search(term, background, target) {
     term = substitute_suffixes(term).trim();
-    console.log(target.url);
     //"https://www.google.com/search?q="
     var url = target.url + encodeURIComponent(term);
     if (background !== true) {

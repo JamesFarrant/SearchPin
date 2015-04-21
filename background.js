@@ -27,11 +27,17 @@ var actions = {
     },
     "PERFORM_SEARCH": {
         tip: function (text) {
+            target = get_target(text);
+            text = text.replace(new RegExp("@"+target.shortcut, "i"), "");
+
+            var tip_text = "";
             if(search_prefix === "") {
-                return "Search for <match>" + substitute_suffixes(text) + "</match>";
+                tip_text = "Search for <match>" + substitute_suffixes(text) + "</match>";
             } else {
-                return "Search for <dim>" + substitute_suffixes(search_prefix) + "</dim> <match>" + substitute_suffixes(text) + "</match>";
+                tip_text = "Search for <dim>" + substitute_suffixes(search_prefix) + "</dim> <match>" + substitute_suffixes(text) + "</match>";
             }
+
+            return tip_text + " on <url>"+target.name+"</url>";
         },
         act: function (text) {
             perform_search(search_prefix + " " + text)

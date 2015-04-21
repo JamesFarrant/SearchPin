@@ -1,0 +1,163 @@
+body {
+	margin: 0;
+}
+
+.sidebar {
+	width:150px;
+
+	position: fixed;
+	float:left;
+	top:0;
+	bottom:0;
+
+	text-align:right;
+	padding-top:200px;
+	background-color: #f4f4f4;
+
+	border-color: gray;
+	border-width: 1px;
+	border-right-style: solid;
+}
+
+.sidebar .logo {
+	position: fixed;
+	top: 10px;
+	left: 10px;
+	background-color: white;
+	border-radius: 50%;
+	height: 130px;
+	width:130px;
+
+	background-image: url("48icon.png");
+	background-repeat: no-repeat;
+	background-position: 41px 31px;
+}
+
+.sidebar .title {
+	position: fixed;
+	top:85px;
+	font-size: 20px;
+	width:130px;
+	text-align:center;
+}
+
+.category {
+	background-color: #f4f4f4;
+	padding: 10px;
+	font-size:16px;
+}
+
+.category:hover {
+	cursor: pointer;
+	background-color: #62a6ea;
+	transition: background-color 0.2s;
+}
+
+.main_content {
+	position: absolute;
+	left:150px;
+}
+
+.banner {
+	font-size: 18px;
+	text-align: left;
+
+	min-height:50px;
+	/*background-color: #f4f4f4;*/
+
+	border-color: gray;
+	border-width: 1px;
+}
+
+.top {
+	position: relative;
+	/*border-bottom-style: solid;*/
+}
+
+.top .title {
+	display:block;
+	margin-left:46px;
+	margin-top:20px;
+	margin-bottom:10px;
+}
+
+.top .content {
+	display:block;
+	font-size: 16px;
+	padding-left:56px;
+	padding-right:40px;
+}
+
+.bottom {
+	padding-top:20px;
+	vertical-align: top;
+
+	border-top-style: solid;
+}
+
+.search_target_list {
+	min-height:200px;
+	text-align: center;
+	padding-top:35px;
+	padding-bottom:50px;
+	/*box-shadow: 0px 0px 15px #888888;*/
+	position: relative;
+	z-index: 10;
+}
+
+.search_target {
+	display:inline-block;
+	margin:5px;
+
+	width:128px;
+	height:100px;
+	background-color: white;
+	color: black;
+
+	position:relative;
+
+	border-color: gray;
+	border-width: 1px;
+	border-style: solid;
+	border-radius: 3px;
+}
+
+.search_target .name {
+	position:absolute;
+	top:67px;
+	width:128px;
+}
+
+.search_target .url {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	width:120px;
+
+	position:absolute;
+	left: 4;
+	bottom:5;
+
+	font-size: smaller;
+	color: #62a6ea;
+}
+
+.search_target .shortcut {
+	position:absolute;
+	top:10;
+	width:128px;
+	font-size:large;
+}
+
+.search_target .default {
+	font-weight: bold;
+}
+
+.search_target .icon {
+	position:absolute;
+	left: 56px;
+	top:50px;
+
+	width:16px;
+	height:16px;
+}

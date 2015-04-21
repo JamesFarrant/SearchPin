@@ -1,0 +1,241 @@
+/* search target editor */
+
+.search_target_editor {
+    padding:10px;
+    text-align:center;
+    margin-left: 5px;
+    width: 600px;
+    font-size: medium;
+    display:inline-block;
+    border: 1px solid gray;
+    border-radius: 5px;
+    position: relative;
+}
+
+.search_target table {
+    width: 600px;
+    border-collapse:collapse;
+}
+
+.search_target_editor table td {
+    width: 300px;
+}
+
+.search_target_editor table tr {
+    height: 34px;
+}
+
+/* first column of the table */
+.search_target_editor table > tbody > tr > td:first-child {
+    padding-right: 10px;
+    text-align: right;
+}
+
+.search_target_editor .widecolumn {
+    padding-right: 0px;
+    text-align: center;
+}
+
+.search_target_editor .option {
+    border-radius: 8px;
+    padding-left: 5px;
+    padding-right: 5px;
+    cursor: pointer;
+    font-size:14px;
+}
+
+.search_target_editor .yes {
+    background-color: #62a6ea;
+}
+
+.search_target_editor .yes:hover {
+    background-color: #E1E5E8;
+}
+
+.search_target_editor .shortcut_at {
+    font-size: 24px;
+}
+
+.search_target_editor input {
+    font-size: 18px;
+    height: 32px;
+    border: none;
+}
+
+.search_target_editor #shortcut {
+    text-transform: lowercase;
+    width:100px;
+    height: 22px;
+    border-bottom: 1px dashed rgba(200,200,200,1);
+}
+
+.search_target_editor .url {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width:120px;
+
+    cursor: pointer;
+    -webkit-user-select: none;
+    font-size: smaller;
+    color: #62a6ea;
+}
+
+.search_target_editor #url_pattern {
+    width: 600px;
+    text-align:center;
+    vertical-align: middle;
+    font-size: 12px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+#url_pattern .replace_target {
+    display: inline-block;
+    margin-top: 5px;
+    width:16px;
+    height:16px;
+    background-color: #62a6ea;
+    border-radius: 10px;
+}
+
+.search_target_editor #remove_button {
+    position: absolute;
+    cursor: pointer;
+    right: 5px;
+    top: 5px;
+}
+
+
+
+
+
+
+/* search target list */
+
+.search_target_list {
+    min-height:200px;
+    text-align: center;
+    padding-top:35px;
+    padding-bottom:50px;
+    /*box-shadow: 0px 0px 15px #888888;*/
+    position: relative;
+    z-index: 10;
+}
+
+.search_target {
+    display:inline-block;
+    margin:5px;
+
+    width:128px;
+    height:100px;
+    background-color: white;
+    color: black;
+
+    position:relative;
+
+    border-color: gray;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 3px;
+}
+
+.search_target .name {
+    position:absolute;
+    top:67px;
+    width:128px;
+    font-size:14px;
+}
+
+.search_target .url {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width:120px;
+    min-height:10px;
+
+    position:absolute;
+    left: 4;
+    bottom:5;
+
+    font-size:9px;
+    color: #62a6ea;
+}
+
+.search_target .shortcut {
+    position:absolute;
+    top:5;
+    width:128px;
+    font-size:large;
+}
+
+.search_target .default {
+    font-weight: bold;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+}
+
+.search_target .icon, .search_target .add_icon {
+    position:absolute;
+    left:49px;
+    top:32px;
+
+    width:24px;
+    height:24px;
+
+    background-position: 4px 4px;
+    background-repeat: no-repeat;
+
+    border-radius:50%;
+}
+
+.search_target .add_icon {
+    background-color: white;
+    background-image: url('add.png');
+    border: 6px solid rgba(0,150,0,0.5);
+}
+
+/* list hover transitions */
+
+.search_target .name {
+    transition: top 0.1s, font-size 0.1s;
+}
+
+.search_target .url {
+    transition: opacity 0.1s;
+}
+
+.search_target .shortcut {
+    transition: opacity 0.1s;
+}
+
+.search_target .icon, .search_target .add_icon {
+    transition: all 0.1s;
+    transition-property: width, height, top, left, background-position;
+}
+
+.selected_target { 
+    background-color: #62a6ea;
+}
+
+.hoverable:hover .name, .selected_target .name {
+    top: 70px;
+    font-size:18px;
+}
+
+.hoverable:hover .url, .selected_target .url {
+    opacity: 0;
+}
+
+.hoverable:hover .shortcut, .selected_target .shortcut {
+    opacity: 0;
+}
+
+.search_target:hover .icon, .selected_target .icon, .search_target:hover .add_icon, .selected_target .add_icon {
+    left:41px;
+    top:15px;
+
+    width:40px;
+    height:40px;
+
+    background-position: 12px 12px;
+}

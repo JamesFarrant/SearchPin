@@ -1,6 +1,9 @@
 <html>
 <head>
+	<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
 	<link rel="stylesheet" href="main.css">
+	<link rel="stylesheet" href="search_targets.css">
+	<script src="lib/jquery-1.11.2.min.js"></script>
 </head>
 <body>
 
@@ -8,8 +11,8 @@
 	<div class="logo">
 		<div class="title">SearchPin</div>
 	</div>
-	<div class="category">Search Targets</div>
-	<div class="category">Something Else</div>
+	<div class="category hoverable">Search Targets</div>
+	<div class="category hoverable">Something Else</div>
 </div>
 
 <div class="main_content">
@@ -18,54 +21,48 @@
 			Search targets
 		</span>
 		<span class="content">
-			Here you can set up your search targets. These let you search on different websites. To use a search target, write the shortcut at the end of your search.
+			<p>Here you can set up your search targets. These let you search on different websites. To use a search target, write the shortcut at the end of your search.</p>
+
+			<p>For example, to search for cats on Google, you would use <span class="embedded_command_format">> cats @google</span></p>
+
+			<p>Your default target will be used when you don't specify any target.</p>
 		</span>
 	</div>
 
+	<div id="search_target_editor" class="search_target_editor">
+		<table>
+			<tr><td>Shortcut</td><td>
+				<div class="basic">
+					<span class="shortcut_at command_format">@</span><input id="shortcut" placeholder="shortcut" class="command_format" maxlength="10"> </input>
+				</div>
+			</td></tr>
+			<tr><td>Friendly Name</td><td>
+				<input id="name" placeholder="name" maxlength="16"> </input>
+			</td></tr>
+			<tr><td>Is Default?</td><td>
+				<span class="option yes">Make Default</span>
+			</td></tr>
+			<tr><td>URL Pattern</td><td>
+				<div id="url" class="url">www.google.com/searchquery?q=searchquery?q=</div>
+			</td></tr>
+		</table>
+		<div id="pattern_editor">
+			<div id="url_pattern" contenteditable="true">http://www.reddit.com/r/DotA2/search?q=<span class="replace_target">*</span>&amp;restrict_sr=on&amp;sort=relevance&amp;t=all</div>
+			<div>Here you can edit the URL pattern which this target uses. Place a * where your search term would go.</div>
+		</div>
+		<div id="remove_button">
+			Remove
+		</div>
+	</div>
+
+
 	<div class="search_target_list">
-		<div class="search_target">
-			<div class="icon"></div>
-			<div class="name">Google</div>
-			<div class="url">www.google.com</div>
-			<div class="shortcut default">Default</div>
-		</div>
-		<div class="search_target">
-			<div class="icon"></div>
-			<div class="name">Reddit</div>
-			<div class="url">www.reddit.com/searchquery?q=</div>
-			<div class="shortcut">@reddit</div>
-		</div>
-		<div class="search_target">
-			<div class="icon"></div>
-			<div class="name">Facebook</div>
-			<div class="url">www.facebook.com/searchquery?q=</div>
-			<div class="shortcut">@fb</div>
-		</div>
-		<div class="search_target">
-			<div class="icon"></div>
-			<div class="name">Spotify</div>
-			<div class="url">www.spotify.com/searchquery?q=</div>
-			<div class="shortcut">@spotify</div>
-		</div>
-		<div class="search_target">
-			<div class="icon"></div>
-			<div class="name">YouTube</div>
-			<div class="url">www.youtube.com/searchquery?q=</div>
-			<div class="shortcut">@yt</div>
-		</div>
-		<div class="search_target">
-			<div class="icon"></div>
-			<div class="name">Ars Technica</div>
-			<div class="url">www.arstechnica.com</div>
-			<div class="shortcut">@ars</div>
-		</div>
+		<div class="search_target hoverable" id="target_new"><div class="name">Add New</div><div class="add_icon"></div></div>
 	</div>
 
 	<div class="bottom banner">
-		<input class=""> </input>
 	</div>
 </div>
-
 
 	<script src="options.js"></script>
 </body>

@@ -3,7 +3,12 @@
   "description" : "To use, type '>' + TAB to enter a prefix. Then press '>' + TAB then enter your search term. To reset a prefix, type '>' + TAB + '-'.",
   "version": "1.0",
   "background": {
-    "scripts": ["background.js"]
+    "scripts": [
+      "lib/color-thief.js",
+
+      "background.js",
+      "favicon.js"
+    ]
   },	
   "icons": {
     "16": "16icon.png",
@@ -13,6 +18,7 @@
   "manifest_version": 2,
   "permissions": [
   	"storage",
-    "http://suggestqueries.google.com/*"
+    "http://suggestqueries.google.com/*",
+    "chrome://favicon/"
   ]
 }

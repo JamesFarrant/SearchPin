@@ -88,12 +88,25 @@ var actions = {
         act: function(text) {
             remove_suffix(text.substring(1));
         }
+    },
+    "OPEN_OPTIONS_PAGE": {
+        tip: function(text) { 
+            return "Open the SearchPin options";
+        },
+        act: function(text) {
+            chrome.tabs.getSelected(null, function (tab) {
+                chrome.tabs.update(tab.id, {url: chrome.extension.getURL('options.html')});
+            })
+        }
+
     }
 };
 
 function resolve_input(text) {
     var action = "";
-    if (text.indexOf("|") != -1) {
+    if (text.toLowerCase() === "options") {
+        action = "OPEN_OPTIONS_PAGE";
+    } else if (text.indexOf("|") != -1) {
         action = "PERFORM_MULTISEARCH";
     } else if(text.indexOf(">") != -1) { 
         action = "ADD_SUFFIX";
@@ -223,3 +236,53 @@ chrome.omnibox.onInputEntered.addListener(
 );
 
 load_data();
+
+var colorThief = new ColorThief();
+
+function getFavicon(url, callback) {
+    // use chrome to get the favicon
+    var image = new Image();
+    image.src = "chrome://favicon/"+url;
+
+    /* this code works but isn't used at the moment
+
+    // make a canvas to get the top left colour
+    var canvas = document.createElement("canvas");
+    canvas.width = image.width;
+    canvas.height = image.height;
+    var context = canvas.getContext('2d')
+    context.drawImage(image, 0, 0);
+    var top_left = context.getImageData(0, 0, 1, 1).data;*/
+
+    // use colorthief to get the most important colour
+    image.onload = function () {
+        callback(image,colorThief.getColor(image));
+    }
+
+    image.onerror = function () {
+       callback("",[255,255,255],[255,255,255]);
+    }
+}
+
+function save_targets(target_data) {
+    chrome.storage.sync.set({"target_data":target_data},function () {});
+}
+
+function load_targets(callback) {
+    console.log("hello")
+    chrome.storage.sync.get("target_data",function (items) {
+        if('target_data' in items) {
+            target_data = items['target_data'];
+        } else {
+            target_data = [
+                {name:"Google",shortcut:"google",url:"www.google.com"},
+                {name:"Reddit",shortcut:"reddit",url:"www.reddit.com"}, 
+                {name:"Facebook",shortcut:"fb",url:"www.facebook.com"}, 
+                {name:"Spotify",shortcut:"music",url:"www.spotify.com"},    
+                {name:"YouTube",shortcut:"yt",url:"www.youtube.com"},   
+                {name:"Ars Technica",shortcut:"ars",url:"www.arstechnica.com"}  
+            ]
+        }
+        callback(target_data);
+    });
+}

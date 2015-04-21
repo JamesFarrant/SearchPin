@@ -1,5 +1,6 @@
 var search_prefix = "";
 var suffixes = {};
+var targets = [];
 
 var actions = {
     "MISSING": { tip: function (text) {
@@ -151,9 +152,22 @@ function substitute_suffixes(text) {
     return applicable_suffixes.join(" ");
 }
 
-function perform_search(term, background) { //add background feature
+function get_target(term) {
+    for(var i in targets) {
+        if(term.match("@"+targets[i].shortcut)) {
+            return targets[i]
+        }
+    }
+    return targets[0]; // todo: make this default
+}
+
+function perform_search(term, background) {
+    target = get_target(term); // todo move this somewhere else
+    term = term.replace(new RegExp("@"+target.shortcut, "i"), "");
     term = substitute_suffixes(term).trim();
-    var url = "https://www.google.com/search?q=" + encodeURIComponent(term);
+    console.log(target.url);
+    //"https://www.google.com/search?q="
+    var url = target.url + encodeURIComponent(term);
     if (background !== true) {
         chrome.tabs.getSelected(null, function (tab) {
             chrome.tabs.update(tab.id, {url: url});
@@ -202,7 +216,6 @@ function give_suggestions(text, suggest) {
         if (result[1].length > 0) {
             for (var i = 0; i < 5 && i < result[1].length; i++) {
                 var r = result[1][i];
-                console.log(r);
                 if (search_prefix === "") {
                     suggest([
                         {content: r, description: "<match>" + r + "</match>"}
@@ -269,20 +282,25 @@ function save_targets(target_data) {
 }
 
 function load_targets(callback) {
-    console.log("hello")
     chrome.storage.sync.get("target_data",function (items) {
-        if('target_data' in items) {
+        if(false && 'target_data' in items) {
             target_data = items['target_data'];
         } else {
             target_data = [
-                {name:"Google",shortcut:"google",url:"www.google.com"},
-                {name:"Reddit",shortcut:"reddit",url:"www.reddit.com"}, 
-                {name:"Facebook",shortcut:"fb",url:"www.facebook.com"}, 
-                {name:"Spotify",shortcut:"music",url:"www.spotify.com"},    
-                {name:"YouTube",shortcut:"yt",url:"www.youtube.com"},   
-                {name:"Ars Technica",shortcut:"ars",url:"www.arstechnica.com"}  
+                {name:"Google",shortcut:"google",url:"https://www.google.com/search?q="},
+                {name:"Reddit",shortcut:"reddit",url:"http://www.reddit.com/r/all/search?restrict_sr=on&sort=relevance&t=all&q="}, 
+                {name:"Facebook",shortcut:"fb",url:"https://www.facebook.com/search/results/?q="}, 
+                {name:"Spotify",shortcut:"music",url:"https://play.spotify.com/search/"},    
+                {name:"YouTube",shortcut:"yt",url:"https://www.youtube.com/results?search_query="},   
+                {name:"Flickr",shortcut:"flickr",url:"https://www.flickr.com/search/?q="},   
+                {name:"Twitter",shortcut:"twitter",url:"http://twitter.com/search?src=typd&lang=en&q="},   
+                {name:"GitHub",shortcut:"git",url:"https://github.com/search?utf8=✓&q="},   
+                {name:"StackOverflow",shortcut:"so",url:"http://stackoverflow.com/search?q="} 
             ]
         }
+        targets = target_data;
         callback(target_data);
     });
 }
+
+load_targets(function(x){})

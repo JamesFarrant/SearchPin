@@ -142,6 +142,7 @@
 
 .search_target .name {
     position:absolute;
+    overflow:hidden;
     top:67px;
     width:128px;
     font-size:14px;

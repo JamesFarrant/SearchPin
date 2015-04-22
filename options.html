@@ -3,6 +3,7 @@
 	<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
 	<link rel="stylesheet" href="main.css">
 	<link rel="stylesheet" href="search_targets.css">
+	<link rel="stylesheet" href="reference.css">
 	<script src="lib/jquery-1.11.2.min.js"></script>
 </head>
 <body>
@@ -11,11 +12,282 @@
 	<div class="logo">
 		<div class="title">SearchPin</div>
 	</div>
-	<div class="category hoverable">Search Targets</div>
-	<div class="category hoverable">Something Else</div>
+	<div id="intro_button" class="category hoverable">Introduction</div>
+	<div id="help_button" class="category hoverable">Help</div>
+	<div id="features_button" class="category hoverable">Features</div>
+	<div id="reference_button" class="category hoverable">Reference</div>
+	<div id="targets_button" class="category hoverable">Search Targets</div>
 </div>
 
-<div class="main_content">
+<!-- landing page -->
+<div id="intro_page" class="main_content hidden">
+	<div class="top banner">
+		<span class="title">
+			Welcome to the SearchPin Extension for Chrome!
+		</span>
+
+		<span class="content">
+			<p>To perform any of the commands in SearchPin, start by entering <span class="embedded_command_format">></span> into your omnibox (the URL bar at the top of the browser.)<p>
+
+			<p>SearchPin can be used to help speed up searching for things. For instance, if you want to search for a number of things at once, try <span class="embedded_command_format">> cats | dogs</span> to run two searches.</p>
+
+			<p>Or you could open a search in a background tab by ending your search with <span class="embedded_command_format">&amp;</span>.</p>
+
+			<p>For a full list of SearchPin features, go to the features page. For help on a specific command, go to the reference page.</p>
+		</span>
+
+
+		<span class="subtitle">
+			Credit
+		</span>
+
+		<span class="content">
+			<p>SearchPin is developed by <a href="https://github.com/ajvr">Alastair Janse van Rensburg</a> and <a href="https://github.com/JamesFarrant">James Farrant</a></p>
+			<p>SearchPin uses <a href="http://lokeshdhakar.com/projects/color-thief/">color-thief</a> to get favicon colours. Some icons are from <a href="http://www.famfamfam.com/">FamFamFam</a>.
+		</span>
+	</div>
+</div>
+
+<!-- help page -->
+<div id="help_page" class="main_content hidden">
+	<div class="top banner">
+		<span class="title">
+			Help Page
+		</span>
+
+		<span class="subtitle">
+			How do I use SearchPin?
+		</span>
+
+		<span class="content">
+			<p>You interact with SearchPin through the omnibox at the top of your browser.</p>
+
+			<p>To start interacting with SearchPin, type <span class="embedded_command_format">></span> into the box and either press the Tab key or spacebar.</p>
+		</span>
+
+		<span class="subtitle">
+			What can I do with SearchPin?
+		</span>
+
+		<span class="content">
+			<p>SearchPin adds lots of shortcuts to help you search faster and more easily. For a full list of features, go to the reference page.</p>
+
+			<p>SearchPin adds lots of shortcuts to help you search faster and more easily. For a full list of features, go to the reference page.</p>
+
+			<p>For a full list of SearchPin features, go to the features page. For help on a specific command, go to the reference page.</p>
+		</span>
+
+		<span class="subtitle">
+			How do I get rid of SearchPin?
+		</span>
+
+		<span class="content">
+			<p>SearchPin can be removed through the Chrome Extensions page (chrome://extensions)</p>
+		</span>
+	</div>
+</div>
+
+
+<!-- features page -->
+<div id="features_page" class="main_content">
+	<div class="top banner">
+		<span class="sectiontitle">
+			Basic Searching
+		</span>
+		<span class="subsubtitle">
+			Usage
+		</span>
+		<span class="content">
+			<p><span class="embedded_command_format">> [search terms]</span></p>
+		</span>
+		<span class="subsubtitle">
+			Description
+		</span>
+		<span class="content">
+			<p>Usage: <span class="embedded_command_format">> search terms</span></p>
+			<p>Entering search terms will start a search for those terms.</p>
+		</span>
+		<span class="subsubtitle">
+			Example
+		</span>
+		<span class="content">
+			<p><span class="embedded_command_format">> cat pictures</span></p>
+			<p>This will search for pictures of cats.</p>
+		</span>
+
+
+		<span class="sectiontitle">
+			Prefixes
+		</span>
+		<span class="subsubtitle">
+			Usage
+		</span>
+		<span class="content">
+			<p><span class="embedded_command_format">> +[prefix]</span></p>
+			<p><span class="embedded_command_format">> -</span></p>
+		</span>
+		<span class="subsubtitle">
+			Description
+		</span>
+		<span class="content">
+			<p>Setting your prefix will make SearchPin add that prefix to all searches you make.</p>
+			<p><span class="embedded_command_format">> -</span> will clear your prefix</p>
+		</span>
+		<span class="subsubtitle">
+			Example
+		</span>
+		<span class="content">
+			<p><span class="embedded_command_format">> +javascript</span></p>
+			<p>This will set your prefix to javascript, which means you can search for relevant things without retyping it each time.</p>
+			<p><span class="embedded_command_format">> tutorials</span></p>
+			<p><span class="embedded_command_format">> define classes</span></p>
+			<p>This will search for "javascript tutorials" and "javascript custom classes".</p>
+		</span>
+
+
+		<span class="sectiontitle">
+			Multisearch
+		</span>
+		<span class="subsubtitle">
+			Usage
+		</span>
+		<span class="content">
+			<p><span class="embedded_command_format">> [search 1] | [search 2] | ...</span></p>
+		</span>
+		<span class="subsubtitle">
+			Description
+		</span>
+		<span class="content">
+			<p>Multisearches will perform many different searches in with command. These searches will also use your prefix.</p>
+		</span>
+		<span class="subsubtitle">
+			Example
+		</span>
+		<span class="content">
+			<p><span class="embedded_command_format">> +london</span></p>
+			<p><span class="embedded_command_format">> bus times | films | restaurants</span></p>
+		</span>
+
+
+		<span class="sectiontitle">
+			Suffixes
+		</span>
+		<span class="subsubtitle">
+			Usage
+		</span>
+		<span class="content">
+			<p><span class="embedded_command_format">> [suffix] > [shortcut]</span></p>
+			<p><span class="embedded_command_format">> (search) ![shortcut]</span></p>
+			<p><span class="embedded_command_format">> -[shortcut]</span></p>
+		</span>
+		<span class="subsubtitle">
+			Description
+		</span>
+		<span class="content">
+			<p>Suffixes are shortcuts to add longer parts of searches quickly. When you make a suffix, you assign it a shortcut which you can use to add the suffix to your search again.</p>
+			<p>These can be used to store long search features you might want to use in the future, or to store parts of searches you use often.</p>
+		</span>
+		<span class="subsubtitle">
+			Example
+		</span>
+		<span class="content">
+			<p><span class="embedded_command_format">> filetype:pdf > pdf</span></p>
+			<p><span class="embedded_command_format">> books !pdf</span></p>
+			<p><span class="embedded_command_format">> definition > !d</span></p>
+			<p><span class="embedded_command_format">> !d nifty</span></p>
+		</span>
+
+
+		<span class="sectiontitle">
+			Search Targets
+		</span>
+		<span class="subsubtitle">
+			Usage
+		</span>
+		<span class="content">
+			<p><span class="embedded_command_format">> (search) @[target]</span></p>
+		</span>
+		<span class="subsubtitle">
+			Description
+		</span>
+		<span class="content">
+			<p>Search targets can be used to search in different places. Search targets can be viewed and edited in the options menu. Search targets also work with prefixes and multisearches.</p>
+		</span>
+		<span class="subsubtitle">
+			Example
+		</span>
+		<span class="content">
+			<p><span class="embedded_command_format">> cats @flickr</span></p>
+			<p><span class="embedded_command_format">> cats @yt</span></p>
+			<p><span class="embedded_command_format">> searchpin @git</span></p>
+		</span>
+	</div>
+</div>
+
+<!-- reference page -->
+<div id="reference_page" class="main_content hidden">
+	<div class="top banner">
+		<span class="title">
+			Reference
+		</span>
+
+		<table>
+			<tr>
+				<td>Search</td>
+				<td><span class='embedded_command_format'>> search terms</span></td>
+				<td>Enter terms to perform a search on your default target.</td>
+			</tr>
+			<tr>
+				<td>Multisearch</td>
+				<td><span class='embedded_command_format'>> search 1 | search 2</span></td>
+				<td>Enter searches separated by | to perform many searches at once. Each search will open in a separate tab.</td>
+			</tr>
+			<tr>
+				<td>Options</td>
+				<td><span class='embedded_command_format'>> options</span></td>
+				<td>Opens the help and options pages.</td>
+			</tr>
+			<tr>
+				<td>Targetting</td>
+				<td><span class='embedded_command_format'>> (command) @[target]</span></td>
+				<td>Add <span class='embedded_command_format'>@target</span> to your search to perform a search on that target instead.</td>
+			</tr>
+			<tr>
+				<td>Set prefix</td>
+				<td><span class='embedded_command_format'>> +[prefix]</span></td>
+				<td>Sets your prefix, which will be added to all subsequent searches and multisearches.</td>
+			</tr>
+			<tr>
+				<td>Clear prefix</td>
+				<td><span class='embedded_command_format'>> -</span></td>
+				<td>Clears your prefix.</td>
+			</tr>
+			<tr>
+				<td>Use suffix</td>
+				<td><span class='embedded_command_format'>> (search) ![shortcut]</span></td>
+				<td>Adds the corresponding suffix to your search.</td>
+			</tr>
+			<tr>
+				<td>Add new suffix</td>
+				<td><span class='embedded_command_format'>> [suffix] > [shortcut]</span></td>
+				<td>Creates a new suffix.</td>
+			</tr>
+			<tr>
+				<td>Remove suffix</td>
+				<td><span class='embedded_command_format'>> -[shortcut]</span></td>
+				<td>Removes a suffix.</td>
+			</tr>
+			<tr>
+				<td>Background Search</td>
+				<td><span class='embedded_command_format'>> (search) &amp;</span></td>
+				<td>Opens the search in a new tab.</td>
+			</tr>
+		</table>
+	</div>
+</div>
+
+<!-- search targets page -->
+<div id="search_targets" class="main_content hidden">
 	<div class="top banner">
 		<span class="title">
 			Search targets
@@ -64,6 +336,7 @@
 	</div>
 </div>
 
+	<script src="navigation.js"></script>
 	<script src="options.js"></script>
 </body>
 <html>

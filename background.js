@@ -178,7 +178,8 @@ function substitute_suffixes(text) {
 
 function get_target(term) {
     for(var i in targets) {
-        if(term.match("@"+targets[i].shortcut)) {
+        if(targets[i] != null && targets[i] != undefined && 
+            term.match("@"+targets[i].shortcut)) {
             return targets[i]
         }
     }
@@ -304,7 +305,7 @@ function save_targets(target_data) {
 
 function load_targets(callback) {
     chrome.storage.sync.get("target_data",function (items) {
-        if(false && 'target_data' in items) {
+        if('target_data' in items) {
             target_data = items['target_data'];
         } else {
             target_data = [

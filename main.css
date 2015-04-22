@@ -23,6 +23,10 @@ input:focus {
 
 /* whole page things */
 
+a {
+	text-decoration: none;
+}
+
 body {
 	margin: 0;
 }
@@ -77,10 +81,19 @@ input {
 }
 
 .main_content {
+	transition: opacity 0.25s;
 	position: absolute;
 	left:200px;
 	max-width:1000px;
 	text-align:center;
+}
+
+.fading {
+	opacity:0;
+}
+
+.hidden {
+	display: none;
 }
 
 .banner {
@@ -103,6 +116,28 @@ input {
 	display:block;
 	margin-left:46px;
 	margin-top:46px;
+	margin-bottom:10px;
+}
+
+.top .sectiontitle {
+	display:block;
+	width: 600px;
+	text-align: center;
+	margin-top:46px;
+	margin-bottom:10px;
+}
+
+.top .subtitle {
+	display:block;
+	font-size:smaller;
+	margin-left:46px;
+	margin-bottom:10px;
+}
+
+.top .subsubtitle {
+	display:block;
+	font-size:18px;
+	margin-left:46px;
 	margin-bottom:10px;
 }
 

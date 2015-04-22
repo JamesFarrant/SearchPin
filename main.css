@@ -47,6 +47,9 @@ input {
 	padding-top:250px;
 	background-color: #dfdfdf;
 
+
+	box-shadow: inset 0px -20px 20px rgba(0,0,0,0.2);
+
 }
 
 .sidebar .logo {
@@ -61,6 +64,8 @@ input {
 	background-image: url("48icon.png");
 	background-repeat: no-repeat;
 	background-position: 41px 31px;
+
+	box-shadow: 0px 0px 20px rgba(0,0,0,0.2);
 }
 
 .sidebar .title {
@@ -75,9 +80,25 @@ input {
 	background-color: #f4f4f4;
 	padding: 10px;
 	margin-top:1px;
+	margin-left:10px;
 	font-size:16px;
 
 	border-left: 5px solid #6ca6ea;
+	transition: border-width 0.5s;
+}
+
+.category.generic {
+	border-left: 5px solid #6ca6ea;
+}
+.category.help {
+	border-left: 5px solid #98B209;
+}
+.category.option {
+	border-left: 5px solid #FF2D19;
+}
+
+.category:hover {
+	border-width: 20px;
 }
 
 .main_content {

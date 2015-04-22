@@ -4,6 +4,8 @@
 	<link rel="stylesheet" href="main.css">
 	<link rel="stylesheet" href="search_targets.css">
 	<link rel="stylesheet" href="reference.css">
+	<link rel="stylesheet" href="suffixes.css">
+	<link rel="shortcut icon" href="16icon_colour.png">
 	<script src="lib/jquery-1.11.2.min.js"></script>
 </head>
 <body>
@@ -17,17 +19,18 @@
 	<div id="features_button" class="category hoverable help">Features</div>
 	<div id="reference_button" class="category hoverable help">Reference</div>
 	<div id="targets_button" class="category hoverable option">Search Targets</div>
+	<div id="suffixes_button" class="category hoverable option">Suffixes</div>
 </div>
 
 <!-- landing page -->
-<div id="intro_page" class="main_content hidden">
+<div id="intro_page" class="main_content">
 	<div class="top banner">
 		<span class="title">
 			Welcome to the SearchPin Extension for Chrome!
 		</span>
 
 		<span class="content">
-			<p>To perform any of the commands in SearchPin, start by entering <span class="embedded_command_format">></span> into your omnibox (the URL bar at the top of the browser.)<p>
+			<p>To perform any of the commands in SearchPin, start by entering <span class="embedded_command_format">></span> into your omnibox (the URL bar at the top of the browser) and pressing Space or Tab.<p>
 
 			<p>SearchPin can be used to help speed up searching for things. For instance, if you want to search for a number of things at once, try <span class="embedded_command_format">> cats | dogs</span> to run two searches.</p>
 
@@ -52,7 +55,7 @@
 <div id="help_page" class="main_content hidden">
 	<div class="top banner">
 		<span class="title">
-			Help Page
+			Help
 		</span>
 
 		<span class="subtitle">
@@ -62,7 +65,7 @@
 		<span class="content">
 			<p>You interact with SearchPin through the omnibox at the top of your browser.</p>
 
-			<p>To start interacting with SearchPin, type <span class="embedded_command_format">></span> into the box and either press the Tab key or spacebar.</p>
+			<p>To start interacting with SearchPin, type <span class="embedded_command_format">></span> into the box and either press the Tab key or Space.</p>
 		</span>
 
 		<span class="subtitle">
@@ -89,7 +92,7 @@
 
 
 <!-- features page -->
-<div id="features_page" class="main_content">
+<div id="features_page" class="main_content hidden">
 	<div class="top banner">
 		<span class="sectiontitle">
 			Basic Searching
@@ -332,6 +335,64 @@
 	</div>
 
 	<div class="bottom banner">
+	</div>
+</div>
+
+<!-- suffixes page -->
+<div id="suffixes_page" class="main_content hidden">
+	<div class="top banner">
+		<span class="title">
+			Suffixes
+		</span>
+		Filter
+
+		<div class="suffix_list">
+			<div class="suffix">
+				<span class="suffix_shortcut">
+					!pdf
+				</span>
+				<span class="suffix_value">
+					filetype:pdf
+				</span>
+				<span class="remove_suffix">
+					Remove
+				</span>
+			</div>
+			<div class="suffix">
+				<span class="suffix_shortcut">
+					!pdf
+				</span>
+				<span class="suffix_value">
+					filetype:pdf
+				</span>
+				<span class="remove_suffix">
+					Remove
+				</span>
+			</div>
+			<div class="suffix">
+				<span class="suffix_shortcut">
+					!pdf
+				</span>
+				<span class="suffix_value">
+					filetype:pdf
+				</span>
+				<span class="remove_suffix">
+					Remove
+				</span>
+			</div>
+			<div class="suffix">
+				<span class="suffix_shortcut">
+					!pdf
+				</span>
+				<span class="suffix_value">
+					filetype:pdf
+				</span>
+				<span class="remove_suffix">
+					Remove
+				</span>
+			</div>
+		</div>
+
 	</div>
 </div>
 

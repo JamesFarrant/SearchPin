@@ -1,0 +1,27 @@
+.suffix_list {
+    text-align: center;
+    font-size:14px;
+    margin-left: 50px;
+}
+.suffix {
+    display:inline-block;
+    border: 1px solid black;
+    border-radius: 5px;
+    padding:5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin:5px;
+}
+/*
+        <div class="suffix_list">
+            <div class="suffix">
+                <div class="suffix_shortcut">
+                    !pdf
+                </div>
+                <div class="suffix_value">
+                    filetype:pdf
+                </div>
+                <div class="remove_suffix">
+                    Remove
+                </div>
+            </div>*/

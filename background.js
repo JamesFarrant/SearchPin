@@ -47,7 +47,11 @@ var actions = {
         act: function (text) {
             target = get_target(text);
             text = text.replace(new RegExp("@"+target.shortcut, "i"), "");
-            perform_search(search_prefix + " " + text, false, target);
+            if (text.match(/&$/)) {
+                perform_search(search_prefix + " " + text.slice(0, -1), true, target, true);
+            } else {
+                perform_search(search_prefix + " " + text, false, target);
+            }
         }
     },
     "PERFORM_MULTISEARCH": {

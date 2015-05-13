@@ -6,13 +6,13 @@
     "scripts": [
       "lib/color-thief.js",
 
-      "background.js",
-      "favicon.js"
+      "js/background.js",
+      "js/favicon.js"
     ]
   },	
   "icons": {
-    "16": "16icon.png",
-    "48": "48icon.png"
+    "16": "img/16icon.png",
+    "48": "img/48icon.png"
   },
   "omnibox": { "keyword" : ">" },
   "manifest_version": 2,

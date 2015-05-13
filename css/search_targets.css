@@ -127,8 +127,8 @@
     display:inline-block;
     margin:5px;
 
-    width:128px;
-    height:100px;
+    width:200px;
+    height:40px;
     background-color: white;
     color: black;
 
@@ -143,21 +143,23 @@
 .search_target .name {
     position:absolute;
     overflow:hidden;
-    top:67px;
-    width:128px;
-    font-size:14px;
+    top:8px;
+    text-align:right;
+    width:150px;
+    font-size:16px;
+    opacity: 0;
 }
 
 .search_target .url {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    width:120px;
+    width:150px;
     min-height:10px;
 
     position:absolute;
-    left: 4;
-    bottom:5;
+    left: 50;
+    bottom:4;
 
     font-size:9px;
     color: #62a6ea;
@@ -165,7 +167,9 @@
 
 .search_target .shortcut {
     position:absolute;
-    top:5;
+    text-align:left;
+    top:4;
+    left:55px;
     width:128px;
     font-size:large;
 }
@@ -177,9 +181,8 @@
 
 .search_target .icon, .search_target .add_icon {
     position:absolute;
-    left:49px;
-    top:32px;
-
+    left:6px;
+    top:2px;
     width:24px;
     height:24px;
 
@@ -198,7 +201,7 @@
 /* list hover transitions */
 
 .search_target .name {
-    transition: top 0.1s, font-size 0.1s;
+    transition: opacity 0.2s;
 }
 
 .search_target .url {
@@ -211,16 +214,15 @@
 
 .search_target .icon, .search_target .add_icon {
     transition: all 0.1s;
-    transition-property: width, height, top, left, background-position;
+    transition-property: width, height, top, left, right, background-position;
 }
 
 .selected_target { 
-    background-color: #62a6ea;
+    background-color: rgba(98,166,234,0.5);
 }
 
 .hoverable:hover .name, .selected_target .name {
-    top: 70px;
-    font-size:18px;
+    opacity: 1;
 }
 
 .hoverable:hover .url, .selected_target .url {
@@ -232,11 +234,9 @@
 }
 
 .search_target:hover .icon, .selected_target .icon, .search_target:hover .add_icon, .selected_target .add_icon {
-    left:41px;
-    top:15px;
+    left:155px;
 
-    width:40px;
-    height:40px;
+    width:24px;
+    height:24px;
 
-    background-position: 12px 12px;
 }

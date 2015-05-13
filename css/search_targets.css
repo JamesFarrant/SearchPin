@@ -191,7 +191,7 @@
 
 .search_target .add_icon {
     background-color: white;
-    background-image: url('add.png');
+    background-image: url('../img/add.png');
     border: 6px solid rgba(0,150,0,0.5);
 }
 

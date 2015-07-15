@@ -1,63 +1,65 @@
-var search_prefix = "";
-var suffixes = {};
-var targets = [];
-var default_target = 0;
-
-var actions = {
-    "MISSING": { tip: function (text) {
-        return "Unknown action";
-    }, act: function (text) {
-    } },
-    "SET_PREFIX": {
-        tip: function (text) {
-            return "Set prefix to <match>" + text.substring(1).trim() + "</match>"
+var MYEXT = {};
+MYEXT.search_prefix = "";
+MYEXT.suffixes = {};
+MYEXT.targets = [];
+MYEXT.default_target = 0;
+MYEXT.actions = {
+    "MISSING": {
+        tip: function(text) {
+            return "Unknown action";
         },
-        act: function (text) {
-            search_prefix = text.substring(1).trim();
+        act: function(text) {}
+    },
+    "SET_PREFIX": {
+        tip: function(text) {
+            return "Set prefix to <match>" + text.substring(1).trim() + "</match>";
+        },
+        act: function(text) {
+            MYEXT.search_prefix = text.substring(1).trim();
             save_data();
         }
     },
     "CLEAR_PREFIX": {
-        tip: function (text) {
-            return "Clear prefix (" + search_prefix + ")";
+        tip: function(text) {
+            return "Clear prefix (" + MYEXT.search_prefix + ")";
         },
-        act: function (text) {
-            search_prefix = "";
+        act: function(text) {
+            MYEXT.search_prefix = "";
             save_data();
         }
     },
     "PERFORM_SEARCH": {
-        tip: function (text) {
+        tip: function(text) {
             target = get_target(text);
-            text = text.replace(new RegExp("@"+target.shortcut, "i"), "");
+            text = text.replace(new RegExp("@" + target.shortcut, "i"), "");
 
             var tip_text = "";
-            if(search_prefix === "") {
+            if (MYEXT.search_prefix === "") {
                 tip_text = "Search for <match>" + substitute_suffixes(text) + "</match>";
             } else {
-                tip_text = "Search for <dim>" + substitute_suffixes(search_prefix) + "</dim> <match>" + substitute_suffixes(text) + "</match>";
+                tip_text = "Search for <dim>" + substitute_suffixes(MYEXT.search_prefix) + "</dim> <match>" + substitute_suffixes(text) + "</match>";
             }
 
-            if(target == targets[default_target]) {
+            if (target == MYEXT.targets[MYEXT.default_target]) {
                 return tip_text;
             } else {
-                return tip_text + " on <url>"+target.name+"</url>";
+                return tip_text + " on <url>" + target.name + "</url>";
             }
         },
-        act: function (text) {
+        act: function(text) {
             target = get_target(text);
-            text = text.replace(new RegExp("@"+target.shortcut, "i"), "");
+            text = text.replace(new RegExp("@" + target.shortcut, "i"), "");
             if (text.match(/&$/)) {
-                perform_search(search_prefix + " " + text.slice(0, -1), true, target, true);
+                perform_search(MYEXT.search_prefix + " " + text.slice(0, -1), true, target, true);
             } else {
-                perform_search(search_prefix + " " + text, false, target);
+                perform_search(MYEXT.search_prefix + " " + text, false, target);
             }
         }
     },
     "PERFORM_MULTISEARCH": {
-        tip: function (text) {
+        tip: function(text) {
             target = get_target(text);
-            text = text.replace(new RegExp("@"+target.shortcut, "i"), "");
+            text = text.replace(new RegExp("@" + target.shortcut, "i"), "");
 
             if (text.match(/^[ \|]*$/)) {
                 // they've entered something like " | "
@@ -71,61 +73,68 @@ var actions = {
             var str = "";
             if (terms.length > 1) {
                 var last_term = terms.pop();
-                var str = terms.join("</match>, <match>");
+                str = terms.join("</match>, <match>");
                 str += "</match> and <match>" + last_term;
             } else {
                 str = terms[0];
             }
 
-            if(target == targets[default_target]) {
+            if (target == MYEXT.targets[MYEXT.default_target]) {
                 return "Perform a multisearch for <match>" + str + "</match>";
             } else {
-                return "Perform a multisearch for <match>" + str + "</match> on <url>"+target.name+"</url>";
+                return "Perform a multisearch for <match>" + str + "</match> on <url>" + target.name + "</url>";
             }
         },
-        act: function (text) {
+        act: function(text) {
             target = get_target(text);
-            text = text.replace(new RegExp("@"+target.shortcut, "i"), "");
+            text = text.replace(new RegExp("@" + target.shortcut, "i"), "");
 
             var terms = text.split("|").reverse();
             for (var i = 0; i < terms.length; i++) {
-                perform_search((search_prefix + " " + terms[i].trim()).trim(), true, target)
+                perform_search((MYEXT.search_prefix + " " + terms[i].trim()).trim(), true, target);
             }
         }
+    },
+    "PERFORM_MULTI_TARGET_SEARCH": {
+        find_targets: function(text) {},
+        tip: function(text) {},
+        act: function(text) {}
     },
     "ADD_SUFFIX": {
         process_input: function(text) {
             var terms = text.split(">");
             var suffix = terms[0].trim();
-            var keyword = terms[1].trim().replace(/!*/,"");
-            return [suffix,keyword];
+            var keyword = terms[1].trim().replace(/!*/, "");
+            return [suffix, keyword];
         },
         tip: function(text) {
             var input = this.process_input(text);
-            return "Add <match>!"+input[1]+"</match> as a shortcut for <match>"+input[0]+"</match>";
+            return "Add <match>!" + input[1] + "</match> as a shortcut for <match>" + input[0] + "</match>";
         },
         act: function(text) {
             var input = this.process_input(text);
 
-            add_suffix(input[1],input[0]);
+            add_suffix(input[1], input[0]);
         }
     },
     "REMOVE_SUFFIX": {
         tip: function(text) {
-            return "Remove <match>!"+text.substring(1)+"</match> as a shortcut";
+            return "Remove <match>!" + text.substring(1) + "</match> as a shortcut";
         },
         act: function(text) {
             remove_suffix(text.substring(1));
         }
     },
     "OPEN_OPTIONS_PAGE": {
-        tip: function(text) { 
-            return "Open the SearchPin options";
+        tip: function(text) {
+            return "Open the SearchPin options. Put a \| in front to search for it directly.";
         },
         act: function(text) {
-            chrome.tabs.getSelected(null, function (tab) {
-                chrome.tabs.update(tab.id, {url: chrome.extension.getURL('options.html')});
-            })
+            chrome.tabs.getSelected(null, function(tab) {
+                chrome.tabs.update(tab.id, {
+                    url: chrome.extension.getURL('options.html')
+                });
+            });
         }
 
     }
@@ -135,9 +144,11 @@ function resolve_input(text) {
     var action = "";
     if (text.toLowerCase() === "options") {
         action = "OPEN_OPTIONS_PAGE";
+    } else if (text.toLowerCase() === "\|options") {
+        action = "PERFORM_SEARCH";
     } else if (text.indexOf("|") != -1) {
         action = "PERFORM_MULTISEARCH";
-    } else if(text.indexOf(">") != -1) { 
+    } else if (text.indexOf(">") != -1) {
         action = "ADD_SUFFIX";
     } else if (text === "-") {
         action = "CLEAR_PREFIX";
@@ -148,21 +159,21 @@ function resolve_input(text) {
     } else {
         action = "PERFORM_SEARCH";
     }
-    return actions[action];
+    return MYEXT.actions[action];
 }
 
 function add_suffix(keyword, suffix) {
     keyword = keyword.toLowerCase();
-    if(!(keyword in suffixes)) {
-        suffixes[keyword] = suffix.trim();
+    if (!(keyword in MYEXT.suffixes)) {
+        MYEXT.suffixes[keyword] = suffix.trim();
     }
     save_data();
 }
 
 function remove_suffix(keyword) {
     keyword = keyword.toLowerCase();
-    if(keyword in suffixes) {
-        delete suffixes[keyword];
+    if (keyword in MYEXT.suffixes) {
+        delete MYEXT.suffixes[keyword];
     }
     save_data();
 }
@@ -170,24 +181,34 @@ function remove_suffix(keyword) {
 function substitute_suffixes(text) {
     var applicable_suffixes = [];
     var working_text = text;
-    for(var s in suffixes) {
-        if(working_text.match(new RegExp("!"+s+"\\b", "i"))) {
-            applicable_suffixes.push(suffixes[s]);
-            working_text = working_text.replace(new RegExp("!"+s+" *", "i"), "")
+    for (var s in MYEXT.suffixes) {
+        if (working_text.match(new RegExp("!" + s + "\\b", "i"))) {
+            applicable_suffixes.push(MYEXT.suffixes[s]);
+            working_text = working_text.replace(new RegExp("!" + s + " *", "i"), "");
         }
-    }    
+    }
     applicable_suffixes.unshift(working_text.trim());
     return applicable_suffixes.join(" ");
 }
 
 function get_target(term) {
-    for(var i in targets) {
-        if(targets[i] != null && targets[i] != undefined && 
-            term.match("@"+targets[i].shortcut)) {
-            return targets[i]
+    for (var i in MYEXT.targets) {
+        if (MYEXT.targets[i] !== null && MYEXT.targets[i] !== undefined &&
+            term.match("@" + MYEXT.targets[i].shortcut)) {
+            return MYEXT.targets[i];
+        } else if (term.match(/^[ @]*$/)) { // @word @word
+        console.log(term);
+            /*
+              FOR EACH TARGET THAT WE FIND AFTER THE FIRST ONE ( "@xxxxxxxx @yyyyyyy") {
+                    IF IT'S NOT IN THE TARGET ARRAY
+                        DO A NORMAL SEARCH
+                    ELSE
+                        APPLY THE GET TARGET FUNCTION ON THAT TARGET AND ADD IT TO THE SEARCH
+              }
+              */
         }
     }
-    return targets[0]; // todo: make this default
+    return MYEXT.targets[0]; // todo: make this default
 }
 
 function perform_search(term, background, target) {
@@ -195,44 +216,52 @@ function perform_search(term, background, target) {
     //"https://www.google.com/search?q="
     var url = target.url + encodeURIComponent(term);
     if (background !== true) {
-        chrome.tabs.getSelected(null, function (tab) {
-            chrome.tabs.update(tab.id, {url: url});
-        })
+        chrome.tabs.getSelected(null, function(tab) {
+            chrome.tabs.update(tab.id, {
+                url: url
+            });
+        });
     } else {
         chrome.tabs.getSelected(null, function(tab) {
-            chrome.tabs.create({'url': url, 'windowId': tab.windowId, 'index': tab.index + 1, 'openerTabId': tab.id}, function (tab) {
-            });
+            chrome.tabs.create({
+                'url': url,
+                'windowId': tab.windowId,
+                'index': tab.index + 1,
+                'openerTabId': tab.id
+            }, function(tab) {});
         });
     }
 }
 
 function save_data() {
-    var prefix_value = search_prefix;
+    var prefix_value = MYEXT.search_prefix;
     // Stores the prefix
-    chrome.storage.sync.set({"saved_prefix": prefix_value, "suffixes": JSON.stringify(suffixes)}, function () {
-    });
+    chrome.storage.sync.set({
+        "saved_prefix": prefix_value,
+        "suffixes": JSON.stringify(MYEXT.suffixes)
+    }, function() {});
 }
 
 function load_data() {
-    chrome.storage.sync.get(["saved_prefix", "suffixes"], function (items) {
-        search_prefix = items['saved_prefix'];
-        if (search_prefix == undefined) {
-            search_prefix = "";
+    chrome.storage.sync.get(["saved_prefix", "suffixes"], function(items) {
+        MYEXT.search_prefix = items.saved_prefix;
+        if (MYEXT.search_prefix === undefined) {
+            MYEXT.search_prefix = "";
         }
 
-        if(items["suffixes"] !== undefined) {
-            suffixes = JSON.parse(items["suffixes"]);
+        if (items['suffixes'] !== undefined) {
+            MYEXT.suffixes = JSON.parse(items['suffixes']);
         }
     });
 }
 
 function give_suggestions(text, suggest) {
-    if ((search_prefix + text).trim().length > 0) {
+    if ((MYEXT.search_prefix + text).trim().length > 0) {
         var xhr = new XMLHttpRequest();
 
-        xhr.open("GET", 
-            "http://suggestqueries.google.com/complete/search?client=chrome&q=" + 
-            encodeURIComponent(search_prefix + " " + substitute_suffixes(text)), 
+        xhr.open("GET",
+            "http://suggestqueries.google.com/complete/search?client=chrome&q=" +
+            encodeURIComponent(MYEXT.search_prefix + " " + substitute_suffixes(text)),
             false);
 
         xhr.send();
@@ -242,15 +271,17 @@ function give_suggestions(text, suggest) {
         if (result[1].length > 0) {
             for (var i = 0; i < 5 && i < result[1].length; i++) {
                 var r = result[1][i];
-                if (search_prefix === "") {
-                    suggest([
-                        {content: r, description: "<match>" + r + "</match>"}
-                    ]);
-                } else if (r.startsWith(search_prefix)) {
-                    var search = r.substr(search_prefix.length + 1);
-                    suggest([
-                        {content: search, description: "<dim>" + search_prefix + "</dim> <match>" + search + "</match>"}
-                    ]);
+                if (MYEXT.search_prefix === "") {
+                    suggest([{
+                        content: r,
+                        description: "<match>" + r + "</match>"
+                    }]);
+                } else if (r.startsWith(MYEXT.search_prefix)) {
+                    var search = r.substr(MYEXT.search_prefix.length + 1);
+                    suggest([{
+                        content: search,
+                        description: "<dim>" + MYEXT.search_prefix + "</dim> <match>" + search + "</match>"
+                    }]);
                 }
             }
         }
@@ -258,17 +289,19 @@ function give_suggestions(text, suggest) {
 }
 
 chrome.omnibox.onInputChanged.addListener(
-    function (text, suggest) {
+    function(text, suggest) {
         var desired_action = resolve_input(text);
         var tip_text = desired_action.tip(text);
-        chrome.omnibox.setDefaultSuggestion({description: tip_text});
+        chrome.omnibox.setDefaultSuggestion({
+            description: tip_text
+        });
 
         give_suggestions(text, suggest);
     }
 );
 
 chrome.omnibox.onInputEntered.addListener(
-    function (text) {
+    function(text) {
         var desired_action = resolve_input(text);
         desired_action.act(text);
     }
@@ -281,7 +314,7 @@ var colorThief = new ColorThief();
 function getFavicon(url, callback) {
     // use chrome to get the favicon
     var image = new Image();
-    image.src = "chrome://favicon/"+url;
+    image.src = "chrome://favicon/" + url;
 
     /* this code works but isn't used at the moment
 
@@ -294,39 +327,77 @@ function getFavicon(url, callback) {
     var top_left = context.getImageData(0, 0, 1, 1).data;*/
 
     // use colorthief to get the most important colour
-    image.onload = function () {
-        callback(image,colorThief.getColor(image));
-    }
+    image.onload = function() {
+        callback(image, colorThief.getColor(image));
+    };
 
-    image.onerror = function () {
-       callback("",[255,255,255],[255,255,255]);
-    }
+    image.onerror = function() {
+        callback("", [255, 255, 255], [255, 255, 255]);
+    };
 }
 
 function save_targets(target_data) {
-    chrome.storage.sync.set({"target_data":target_data},function () {});
+    chrome.storage.sync.set({
+        "target_data": target_data
+    }, function() {});
 }
 
 function load_targets(callback) {
-    chrome.storage.sync.get("target_data",function (items) {
-        if('target_data' in items) {
-            target_data = items['target_data'];
-        } else {
-            target_data = [
-                {name:"Google",shortcut:"google",url:"https://www.google.com/search?q="},
-                {name:"Reddit",shortcut:"reddit",url:"http://www.reddit.com/r/all/search?restrict_sr=on&sort=relevance&t=all&q="}, 
-                {name:"Facebook",shortcut:"fb",url:"https://www.facebook.com/search/results/?q="}, 
-                {name:"Spotify",shortcut:"music",url:"https://play.spotify.com/search/"},    
-                {name:"YouTube",shortcut:"yt",url:"https://www.youtube.com/results?search_query="},   
-                {name:"Flickr",shortcut:"flickr",url:"https://www.flickr.com/search/?q="},   
-                {name:"Twitter",shortcut:"twitter",url:"http://twitter.com/search?src=typd&lang=en&q="},   
-                {name:"GitHub",shortcut:"git",url:"https://github.com/search?utf8=✓&q="},   
-                {name:"StackOverflow",shortcut:"so",url:"http://stackoverflow.com/search?q="} 
-            ]
-        }
-        targets = target_data;
+    chrome.storage.sync.get("target_data", function(items) {
+        //    if ('target_data' in items) {
+        //      target_data = items['target_data'];
+        //    } else {
+        target_data = [{
+                name: "Google",
+                shortcut: "google",
+                url: "https://www.google.com/search?q="
+            }, {
+                name: "Reddit",
+                shortcut: "reddit",
+                url: "http://www.reddit.com/r/all/search?restrict_sr=on&sort=relevance&t=all&q="
+            }, {
+                name: "Facebook",
+                shortcut: "fb",
+                url: "https://www.facebook.com/search/results/?q="
+            }, {
+                name: "Spotify",
+                shortcut: "music",
+                url: "https://play.spotify.com/search/"
+            }, {
+                name: "YouTube",
+                shortcut: "yt",
+                url: "https://www.youtube.com/results?search_query="
+            }, {
+                name: "Flickr",
+                shortcut: "flickr",
+                url: "https://www.flickr.com/search/?q="
+            }, {
+                name: "Twitter",
+                shortcut: "twitter",
+                url: "http://twitter.com/search?src=typd&lang=en&q="
+            }, {
+                name: "GitHub",
+                shortcut: "git",
+                url: "https://github.com/search?utf8=✓&q="
+            }, {
+                name: "StackOverflow",
+                shortcut: "so",
+                url: "http://stackoverflow.com/search?q="
+            }, {
+                name: "Bing Images",
+                shortcut: "img",
+                url: "https://www.bing.com/images/search?q="
+            }, {
+                name: "Tumblr",
+                shortcut: "tumblr",
+                url: "https://www.tumblr.com/search/"
+            },
+
+        ];
+        //    }
+        MYEXT.targets = target_data;
         callback(target_data);
     });
 }
 
-load_targets(function(x){})
+load_targets(function(x) {});

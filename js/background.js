@@ -214,7 +214,9 @@ function get_target(term) {
 function perform_search(term, background, target) {
     term = substitute_suffixes(term).trim();
     //"https://www.google.com/search?q="
-    var url = target.url + encodeURIComponent(term);
+    console.log(target.url)
+    var url = target.url.replace("*",encodeURIComponent(term));
+    console.log(url)
     if (background !== true) {
         chrome.tabs.getSelected(null, function(tab) {
             chrome.tabs.update(tab.id, {
@@ -256,7 +258,7 @@ function load_data() {
 }
 
 function give_suggestions(text, suggest) {
-    if ((MYEXT.search_prefix + text).trim().length > 0) {
+    /*if ((MYEXT.search_prefix + text).trim().length > 0) {
         var xhr = new XMLHttpRequest();
 
         xhr.open("GET",
@@ -285,7 +287,7 @@ function give_suggestions(text, suggest) {
                 }
             }
         }
-    }
+    }*/
 }
 
 chrome.omnibox.onInputChanged.addListener(
@@ -344,57 +346,57 @@ function save_targets(target_data) {
 
 function load_targets(callback) {
     chrome.storage.sync.get("target_data", function(items) {
-        //    if ('target_data' in items) {
-        //      target_data = items['target_data'];
-        //    } else {
-        target_data = [{
-                name: "Google",
-                shortcut: "google",
-                url: "https://www.google.com/search?q="
-            }, {
-                name: "Reddit",
-                shortcut: "reddit",
-                url: "http://www.reddit.com/r/all/search?restrict_sr=on&sort=relevance&t=all&q="
-            }, {
-                name: "Facebook",
-                shortcut: "fb",
-                url: "https://www.facebook.com/search/results/?q="
-            }, {
-                name: "Spotify",
-                shortcut: "music",
-                url: "https://play.spotify.com/search/"
-            }, {
-                name: "YouTube",
-                shortcut: "yt",
-                url: "https://www.youtube.com/results?search_query="
-            }, {
-                name: "Flickr",
-                shortcut: "flickr",
-                url: "https://www.flickr.com/search/?q="
-            }, {
-                name: "Twitter",
-                shortcut: "twitter",
-                url: "http://twitter.com/search?src=typd&lang=en&q="
-            }, {
-                name: "GitHub",
-                shortcut: "git",
-                url: "https://github.com/search?utf8=✓&q="
-            }, {
-                name: "StackOverflow",
-                shortcut: "so",
-                url: "http://stackoverflow.com/search?q="
-            }, {
-                name: "Bing Images",
-                shortcut: "img",
-                url: "https://www.bing.com/images/search?q="
-            }, {
-                name: "Tumblr",
-                shortcut: "tumblr",
-                url: "https://www.tumblr.com/search/"
-            },
+        if ('target_data' in items) {
+          target_data = items['target_data'];
+        } else {
+            target_data = [{
+                    name: "Google",
+                    shortcut: "google",
+                    url: "https://www.google.com/search?q=*"
+                }, {
+                    name: "Reddit",
+                    shortcut: "reddit",
+                    url: "http://www.reddit.com/r/all/search?restrict_sr=on&sort=relevance&t=all&q=*"
+                }, {
+                    name: "Facebook",
+                    shortcut: "fb",
+                    url: "https://www.facebook.com/search/results/?q=*"
+                }, {
+                    name: "Spotify",
+                    shortcut: "music",
+                    url: "https://play.spotify.com/search/*"
+                }, {
+                    name: "YouTube",
+                    shortcut: "yt",
+                    url: "https://www.youtube.com/results?search_query=*"
+                }, {
+                    name: "Flickr",
+                    shortcut: "flickr",
+                    url: "https://www.flickr.com/search/?q=*"
+                }, {
+                    name: "Twitter",
+                    shortcut: "twitter",
+                    url: "http://twitter.com/search?src=typd&lang=en&q=*"
+                }, {
+                    name: "GitHub",
+                    shortcut: "git",
+                    url: "https://github.com/search?utf8=✓&q=*"
+                }, {
+                    name: "StackOverflow",
+                    shortcut: "so",
+                    url: "http://stackoverflow.com/search?q=*"
+                }, {
+                    name: "Bing Images",
+                    shortcut: "img",
+                    url: "https://www.bing.com/images/search?q=*"
+                }, {
+                    name: "Tumblr",
+                    shortcut: "tumblr",
+                    url: "https://www.tumblr.com/search/*"
+                },
 
-        ];
-        //    }
+            ];
+        }
         MYEXT.targets = target_data;
         callback(target_data);
     });

@@ -124,9 +124,9 @@ function setupEditor(target_id) {
 	$("#search_target_editor #shortcut")[0].value = target.shortcut;
 	$("#search_target_editor #name")[0].value = target.name;
 	if(target.url == "") {
-		$("#search_target_editor #url")[0].textContent = "click to add";
+		$("#search_target_editor #url")[0].value = "";
 	} else {
-		$("#search_target_editor #url")[0].textContent = target.url;
+		$("#search_target_editor #url")[0].value = target.url;
 	}
 
 	$(".search_target").removeClass("selected_target");
@@ -144,28 +144,34 @@ function editorChanged() {
 	save_targets();
 }
 
-$("#search_target_editor #shortcut").on('change', function() {
+$("#search_target_editor #shortcut").on('change keyup', function() {
 	if(editor.data('id') === undefined) { return; }
 	target_data[editor.data('id')].shortcut = $(this)[0].value.toLowerCase();
 	editorChanged();
 })
 
-$("#search_target_editor #name").on('change', function() {
+$("#search_target_editor #name").on('change keyup', function() {
 	if(editor.data('id') === undefined) { return; }
 	target_data[editor.data('id')].name = $(this)[0].value;
 	editorChanged();
 })
 
-$("#search_target_editor #url").on( "click", function() {
-	$("#pattern_editor").toggle();
+$('#url').on('change keyup', function() {
+	if(editor.data('id') === undefined) { return; }
+	target_data[editor.data('id')].url = $(this)[0].value;
 	editorChanged();
 })
+
+/*$("#search_target_editor #url").on( "click", function() {
+	$("#pattern_editor").toggle();
+	editorChanged();
+})*/
 
 
 // initial code
 
 //editor.hide();
-$("#pattern_editor").hide();
+//$("#pattern_editor").hide();
 
 
 // shortcut editor
@@ -182,7 +188,8 @@ $('#shortcut').bind('keypress', function (event) {
 
 
 // url editor
-$('body').on('focus', '[contenteditable]', function() {
+
+/*$('body').on('focus', '[contenteditable]', function() {
     var $this = $(this);
     $this.data('before', $this.text());
     return $this;
@@ -198,7 +205,7 @@ $('body').on('focus', '[contenteditable]', function() {
 $('#url_pattern').on('change', function() {
 	var textbox = $('#url_pattern')[0];
 
-	if(!textbox.textContent.match(/\*/)) { return; }
+	if(!textbox.textContent.match(/\*!!!/)) { return; }
 
 	// find the cursor
 	var child_node, range, caretPos = 0, sel = window.getSelection();
@@ -221,7 +228,7 @@ $('#url_pattern').on('change', function() {
 	}
 	// change the text
 	var text = textbox.innerText;
-	var new_code = text.replace(/\*/,'<div class="replace_target">*</div>');
+	var new_code = text.replace(/\*!!!/,'<div class="replace_target">*</div>');
 	textbox.innerHTML = new_code;
 
 	// replace the cursor
@@ -231,4 +238,4 @@ $('#url_pattern').on('change', function() {
 	new_range.setEnd(textbox.childNodes[child_node], caretPos);
 	sel.removeAllRanges();
 	sel.addRange(new_range);
-})
+})*/

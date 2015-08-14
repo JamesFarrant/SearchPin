@@ -29,6 +29,28 @@ MYEXT.actions = {
         }
     },
     "PERFORM_SEARCH": {
+        suggest_text: function(text) {
+            target = get_target(text);
+            text = text.replace(new RegExp("@" + target.shortcut, "i"), "");
+            if (text.match(/&$/)) {
+                text = text.slice(0, -1);
+            }
+            return text;
+        },
+        suggest_response: function(original, suggestion) {
+            if (suggestion.startsWith(MYEXT.search_prefix)) {
+                var search = suggestion.substr(MYEXT.search_prefix.length + 1);
+                return [{
+                    content: search,
+                    description: "<dim>" + MYEXT.search_prefix + "</dim> <match>" + search + "</match>"
+                }];
+            } else {
+                return [{
+                    content: suggestion,
+                    description: "<match>" + suggestion + "</match>"
+                }];
+            }
+        },
         tip: function(text) {
             target = get_target(text);
             text = text.replace(new RegExp("@" + target.shortcut, "i"), "");
@@ -127,7 +149,7 @@ MYEXT.actions = {
     },
     "OPEN_OPTIONS_PAGE": {
         tip: function(text) {
-            return "Open the SearchPin options. Put a \| in front to search for it directly.";
+            return "Open the SearchPin options.";
         },
         act: function(text) {
             chrome.tabs.getSelected(null, function(tab) {
@@ -144,8 +166,6 @@ function resolve_input(text) {
     var action = "";
     if (text.toLowerCase() === "options") {
         action = "OPEN_OPTIONS_PAGE";
-    } else if (text.toLowerCase() === "\|options") {
-        action = "PERFORM_SEARCH";
     } else if (text.indexOf("|") != -1) {
         action = "PERFORM_MULTISEARCH";
     } else if (text.indexOf(">") != -1) {
@@ -257,8 +277,9 @@ function load_data() {
     });
 }
 
-function give_suggestions(text, suggest) {
-    /*if ((MYEXT.search_prefix + text).trim().length > 0) {
+// actually makes the suggestion request
+function get_suggestions(text, callback) {
+    if (text.trim().length > 0) {
         var xhr = new XMLHttpRequest();
 
         xhr.open("GET",
@@ -273,21 +294,22 @@ function give_suggestions(text, suggest) {
         if (result[1].length > 0) {
             for (var i = 0; i < 5 && i < result[1].length; i++) {
                 var r = result[1][i];
-                if (MYEXT.search_prefix === "") {
-                    suggest([{
-                        content: r,
-                        description: "<match>" + r + "</match>"
-                    }]);
-                } else if (r.startsWith(MYEXT.search_prefix)) {
-                    var search = r.substr(MYEXT.search_prefix.length + 1);
-                    suggest([{
-                        content: search,
-                        description: "<dim>" + MYEXT.search_prefix + "</dim> <match>" + search + "</match>"
-                    }]);
-                }
+                callback(r);
             }
         }
-    }*/
+    }
+}
+
+function give_suggestions(action, text, suggest) {
+    if(!("suggest_text" in action)) { return; }
+    var start_text = action.suggest_text(text)
+    if (start_text.length > 0) {
+        var xhr = new XMLHttpRequest();
+        get_suggestions(start_text, function(r) {
+            var suggestions = action.suggest_response(text, r)
+            suggest(suggestions);
+        })
+    }
 }
 
 chrome.omnibox.onInputChanged.addListener(
@@ -298,7 +320,7 @@ chrome.omnibox.onInputChanged.addListener(
             description: tip_text
         });
 
-        give_suggestions(text, suggest);
+        give_suggestions(desired_action, text, suggest);
     }
 );
 
@@ -339,6 +361,7 @@ function getFavicon(url, callback) {
 }
 
 function save_targets(target_data) {
+    console.log("SAVE")
     chrome.storage.sync.set({
         "target_data": target_data
     }, function() {});
@@ -347,7 +370,7 @@ function save_targets(target_data) {
 function load_targets(callback) {
     chrome.storage.sync.get("target_data", function(items) {
         if ('target_data' in items) {
-          target_data = items['target_data'];
+            target_data = items['target_data'];
         } else {
             target_data = [{
                     name: "Google",
@@ -398,6 +421,7 @@ function load_targets(callback) {
             ];
         }
         MYEXT.targets = target_data;
+        save_targets(target_data);
         callback(target_data);
     });
 }

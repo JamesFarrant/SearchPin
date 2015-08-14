@@ -1,4 +1,5 @@
 var target_data;
+var suffix_data;
 var target_list = $('.search_target_list');
 var new_target,name,url,shortcut;
 
@@ -11,7 +12,7 @@ function load_targets() {
 }
 
 function initalise(data) {
-	target_data = data;
+	target_data = data; // this isn't a copy so we're editing the actual targets live
 
     for(var i = target_data.length-1; i >= 0; i--) {
     	if(target_data[i] != undefined) {
@@ -114,7 +115,6 @@ function setupEditor(target_id) {
 		target_id = target_data.length;
 		target_data[target_id] = {name:"New Target",shortcut:"",url:""};
 		getUpdateCallback(add_target(target_id,true)[0])('world.png',[100,250,100])
-
 	}
 	editor.show();
 
@@ -239,3 +239,47 @@ $('#url_pattern').on('change', function() {
 	sel.removeAllRanges();
 	sel.addRange(new_range);
 })*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+// SUFFIX EDIT PAGE
+
+function add_suffix_box(shortcut, prepend) {
+	new_target = $('<div class="suffix">');
+	new_target.attr("id","target_"+target_id)
+	new_target.data("id",target_id);
+
+/*<span class="suffix_shortcut"></span>
+				<span class="suffix_value"></span>
+				<span class="remove_suffix"></span>
+	shortcut_el = $('<span class="suffix_shortcut"></span>')
+	.text(target_data[target_id].name);
+	value_el = $('<span class="suffix_value"></span>')
+	.text(target_data[target_id].name);
+	remove_el = $('<span class="remove_suffix"></span>')
+	.text(target_data[target_id].name);
+
+
+	new_target.append([url_el, name_el,shortcut_el,icon_el]);
+
+	if(prepend) {
+		target_list.prepend(new_target);
+	} else {
+		target_list.append(new_target);
+	}
+
+	new_target.on("click",function() {
+		setupEditor($(this).data('id'));
+	});
+	return new_target*/
+}
